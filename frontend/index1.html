@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiagnoCart - Diagnostics at Your Doorstep</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .hero-bg {
+            background-color: #e6efff;
+        }
+        .booking-options-section {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .booking-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out;
+            cursor: pointer;
+            min-width: 280px;
+            max-width: 320px;
+            flex-grow: 1;
+        }
+        .booking-card:hover {
+            transform: translateY(-5px);
+        }
+        .icon-wrapper {
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+        .icon-wrapper i {
+            font-size: 28px;
+            color: #fff;
+        }
+        .card-content {
+            flex-grow: 1;
+        }
+        .card-content h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .card-content p {
+            margin: 4px 0 0;
+            font-size: 14px;
+            color: #666;
+        }
+        .arrow-icon {
+            margin-left: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .arrow-icon i {
+            font-size: 18px;
+            color: #999;
+        }
+        .whatsapp-card {
+            background-color: #e5f4e5;
+        }
+        .whatsapp-card .icon-wrapper {
+            background-color: #25d366;
+        }
+        .whatsapp-card .card-content h3 {
+            color: #388e3c;
+        }
+        .whatsapp-card .card-content p {
+            color: #66bb6a;
+        }
+        .call-card {
+            background-color: #e6f4ff;
+        }
+        .call-card .icon-wrapper {
+            background-color: #1a73e8;
+        }
+        .call-card .card-content h3 {
+            color: #1976d2;
+        }
+        .call-card .card-content p {
+            color: #64b5f6;
+        }
+        .prescription-card {
+            background-color: #fff8e1;
+        }
+        .prescription-card .icon-wrapper {
+            background-color: #fbc02d;
+        }
+        .prescription-card .card-content h3 {
+            color: #f57f17;
+        }
+        .prescription-card .card-content p {
+            color: #ffca28;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        .modal-content:hover {
+            transform: translateY(-5px);
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            color: #6b7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .close-btn:hover {
+            background-color: #e5e7eb;
+            color: #1e40af;
+        }
+        .modal h3 {
+            color: #1a3c5e;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .modal .form-group {
+            margin-bottom: 20px;
+        }
+        .modal label {
+            display: block;
+            color: #1a3c5e;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .modal label span {
+            color: #ef4444;
+        }
+        .modal input, .modal select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+            color: #374151;
+            background-color: #f9fafb;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .modal input:focus, .modal select:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+        .modal .phone-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal .phone-prefix {
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background-color: #f9fafb;
+            color: #374151;
+            font-size: 14px;
+        }
+        .modal .phone-input {
+            flex: 1;
+        }
+        .modal .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .modal input[type="checkbox"] {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+        }
+        .modal input[type="checkbox"]:checked {
+            background-color: #1e40af;
+            border-color: #1e40af;
+        }
+        .modal input[type="checkbox"]:checked::after {
+            content: '✔';
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+        }
+        .modal .checkbox-label {
+            color: #6b7280;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .modal .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #1e40af;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .modal .submit-btn:hover {
+            background-color: #1e3a8a;
+            transform: translateY(-2px);
+        }
+        @media (max-width: 768px) {
+            .booking-options-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            .booking-card {
+                width: 90%;
+                max-width: 400px;
+            }
+            .modal-content {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <svg class="h-8 w-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24" aria-label="DiagnoCart Logo">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                    </svg>
+                    <span class="ml-2 text-2xl font-bold text-blue-600">DiagnoKart</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <!-- <a href="index1.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Home</a> -->
+                    <a href="book-test.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Book Slot</a>
+                    <a href="Prescript.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Upload Prescription</a>
+                    <a href="track.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Track Status</a>
+                    <a href="book-testVoice.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Voice Booking</a>
+                    <a href="contact.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Contact Us</a>
+                    <a id="auth-button" href="login-signup.html" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">Login/Signup</a> 
+                </div>
+                <div class="flex md:hidden items-center">
+                    <button id="mobile-menu-button" class="text-gray-500 hover:text-blue-600" aria-label="Toggle mobile menu">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Home</a>
+                <a href="book-test.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Book Slot</a>
+                <a href="Prescript.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Upload Prescription</a>
+                <a href="track.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Track Status</a>
+                 <a href="book-testVoice.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Voice Booking</a>
+                <a id="auth-button" href="login-signup.html" class="block mt-1 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium text-center">Login/Signup</a>
+            </div>
+        </div>
+    </nav>
+    <div id="flashMessage" class="text-lg font-semibold text-green-700 mt-4 text-center"></div>
+    <div id="flashMessage" class="text-center font-medium text-white py-2 rounded-md mb-3 hidden"></div>
+
+    <!-- Hero Section -->
+    <section class="hero-bg py-12">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Diagnostics at Your Doorstep</h1>
+                    <p class="mt-4 text-lg text-gray-600">Request sample pickups from your home and get accurate diagnostic results without traveling to a lab. Making healthcare accessible for rural communities.</p>
+                    <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                        <a href="book-test.html" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium shadow-md">Book a Test</a>
+                        <button class="bg-white hover:bg-gray-100 text-blue-600 border border-blue-600 px-5 py-2 rounded-lg font-medium">Learn More</button>
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <svg class="w-full max-w-sm" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" aria-label="Diagnostics Illustration">
+                        <circle cx="200" cy="150" r="100" fill="#bfdbfe"></circle>
+                        <path d="M150,150 L200,100 L250,150 L200,200 Z" fill="#3b82f6"></path>
+                        <rect x="195" y="80" width="10" height="140" rx="5" fill="#1d4ed8"></rect>
+                        <rect x="130" y="145" width="140" height="10" rx="5" fill="#1d4ed8"></rect>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Options Section -->
+    <section class="py-12 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 text-center">Booking Options</h2>
+            <p class="mt-3 text-gray-600 text-center max-w-2xl mx-auto">Choose your preferred way to book a diagnostic test.</p>
+            <div class="booking-options-section mt-10">
+                <div class="booking-card whatsapp-card" id="book-via-whatsapp-btn">
+                    <div class="icon-wrapper">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Book via WhatsApp</h3>
+                        <p>Reach out via text</p>
+                    </div>
+                    <div class="arrow-icon">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+                <div class="booking-card call-card" id="book-via-call-btn">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Book via Call</h3>
+                        <p>Easy booking via phone call</p>
+                    </div>
+                    <div class="arrow-icon">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+                <div class="booking-card prescription-card">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Upload Prescription</h3>
+                        <p>Get assistance from experts</p>
+                    </div>
+                    <div class="arrow-icon">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal for Book via Call -->
+    <div class="modal" id="book-via-call-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <h3>Need help in booking a lab test?</h3>
+            <div class="form-group">
+                <label for="fullName">Full name <span>*</span></label>
+                <input type="text" id="fullName" placeholder="Enter full name">
+            </div>
+            <div class="form-group">
+                <label for="mobileNumber">Enter Mobile Number <span>*</span></label>
+                <div class="phone-group">
+                    <span class="phone-prefix">+91</span>
+                    <input type="tel" id="mobileNumber" class="phone-input" placeholder="">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="city">City <span>*</span></label>
+                <select id="city">
+                    <option value="">Select a city</option>
+                    <option value="mumbai">Mumbai</option>
+                    <option value="delhi">Delhi</option>
+                    <option value="bangalore">Bangalore</option>
+                    <option value="chennai">Chennai</option>
+                </select>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="terms">
+                <label for="terms" class="checkbox-label">
+                    I hereby affirm & authorise DiagnoKart to process the personal data as per the T&C.
+                </label>
+            </div>
+            <button class="submit-btn" onclick="submitForm()">Get a call back</button>
+        </div>
+    </div>
+
+    <!-- Modal for Book via WhatsApp -->
+    <div class="modal" id="book-via-whatsapp-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeWhatsAppModal()">×</button>
+            <h3>Book a Lab Test via WhatsApp</h3>
+            <div class="form-group">
+                <label for="whatsappFullName">Full name <span>*</span></label>
+                <input type="text" id="whatsappFullName" placeholder="Enter full name">
+            </div>
+            <div class="form-group">
+                <label for="whatsappMobileNumber">Enter Mobile Number <span>*</span></label>
+                <div class="phone-group">
+                    <span class="phone-prefix">+91</span>
+                    <input type="tel" id="whatsappMobileNumber" class="phone-input" placeholder="">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="whatsappCity">City <span>*</span></label>
+                <select id="whatsappCity">
+                    <option value="">Select a city</option>
+                    <option value="mumbai">Mumbai</option>
+                    <option value="delhi">Delhi</option>
+                    <option value="bangalore">Bangalore</option>
+                    <option value="chennai">Chennai</option>
+                </select>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="whatsappTerms">
+                <label for="whatsappTerms" class="checkbox-label">
+                    I hereby affirm & authorise DiagnoKart to process the personal data as per the T&C.
+                </label>
+            </div>
+            <button class="submit-btn" onclick="submitWhatsAppForm()">Proceed to WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- Our Impact Section -->
+    <section class="py-12 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 text-center">Our Impact</h2>
+            <p class="mt-3 text-gray-600 text-center max-w-2xl mx-auto">Transforming Healthcare Access</p>
+            <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="bg-white rounded-lg p-5 shadow-sm text-center">
+                    <div class="flex justify-center mb-4">
+                        <svg class="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-label="Patients Served Icon">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800">10,000+</h3>
+                    <p class="mt-2 text-gray-600">Rural patients served</p>
+                </div>
+                <div class="bg-white rounded-lg p-5 shadow-sm text-center">
+                    <div class="flex justify-center mb-4">
+                        <svg class="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-label="Tests Conducted Icon">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a8 8 0 01-8 8m8-8a8 8 0 00-8-8m8 8h2m-2 0v2m0-2h-2m-12 0H3m2 0v-2m0 2v2"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800">50,000+</h3>
+                    <p class="mt-2 text-gray-600">Tests conducted</p>
+                </div>
+                <div class="bg-white rounded-lg p-5 shadow-sm text-center">
+                    <div class="flex justify-center mb-4">
+                        <svg class="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-label="Satisfaction Icon">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800">98%</h3>
+                    <p class="mt-2 text-gray-600">User satisfaction rate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-12 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 text-center">Key Features</h2>
+            <p class="mt-3 text-gray-600 text-center max-w-2xl mx-auto">Making diagnostic services accessible and convenient for everyone.</p>
+            <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-blue-50 rounded-lg p-5 shadow-sm">
+                    <div class="flex justify-center mb-4">
+                        <svg class="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-label="Home Sample Collection Icon">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 text-center">Home Sample Collection</h3>
+                    <p class="mt-2 text-gray-600 text-center">Trained professionals visit your home to collect samples safely.</p>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-5 shadow-sm">
+                    <div class="flex justify-center mb-4">
+                        <svg class="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-label="Prescription Upload Icon">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 text-center">Prescription Upload</h3>
+                    <p class="mt-2 text-gray-600 text-center">Simply upload your doctor's prescription and we'll handle the rest.</p>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-5 shadow-sm">
+                    <div class="flex justify-center mb-4">
+                        <svg class="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-label="Multi-Language Support Icon">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 text-center">Multi-Language Support</h3>
+                    <p class="mt-2 text-gray-600 text-center">Access our services in multiple regional languages.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-12 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 text-center">How It Works</h2>
+            <p class="mt-3 text-gray-600 text-center max-w-2xl mx-auto">Simple steps to get your diagnostic tests done.</p>
+            <div class="mt-10 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white rounded-lg p-5 shadow-sm relative">
+                    <div class="absolute -top-3 -left-3 bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</div>
+                    <h3 class="text-lg font-semibold text-gray-800 text-center mt-2">Book a Test</h3>
+                    <p class="mt-2 text-gray-600 text-center">Select tests and schedule a convenient time.</p>
+                </div>
+                <div class="bg-white rounded-lg p-5 shadow-sm relative">
+                    <div class="absolute -top-3 -left-3 bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</div>
+                    <h3 class="text-lg font-semibold text-gray-800 text-center mt-2">Home Visit</h3>
+                    <p class="mt-2 text-gray-600 text-center">Our phlebotomist visits to collect samples.</p>
+                </div>
+                <div class="bg-white rounded-lg p-5 shadow-sm relative">
+                    <div class="absolute -top-3 -left-3 bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">3</div>
+                    <h3 class="text-lg font-semibold text-gray-800 text-center mt-2">Lab Processing</h3>
+                    <p class="mt-2 text-gray-600 text-center">Samples are processed in certified labs.</p>
+                </div>
+                <div class="bg-white rounded-lg p-5 shadow-sm relative">
+                    <div class="absolute -top-3 -left-3 bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">4</div>
+                    <h3 class="text-lg font-semibold text-gray-800 text-center mt-2">Get Results</h3>
+                    <p class="mt-2 text-gray-600 text-center">Receive digital or physical test reports.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-12 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 text-center">What Our Users Say</h2>
+            <p class="mt-3 text-gray-600 text-center max-w-2xl mx-auto">Hear from people who have experienced DiagnoCart.</p>
+            <div class="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-blue-50 rounded-lg p-5 shadow-sm">
+                    <p class="text-gray-700">"I live 30km from the nearest diagnostic center. DiagnoCart saved me a day's wages and travel time by collecting my samples at home."</p>
+                    <div class="mt-4 flex items-center">
+                        <div class="bg-blue-200 rounded-full p-1">
+                            <svg class="h-6 w-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24" aria-label="User Avatar">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="text-sm font-semibold text-gray-800">Rajesh Kumar</h4>
+                            <p class="text-xs text-gray-600">Farmer, Bihar</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-5 shadow-sm">
+                    <p class="text-gray-700">"My elderly mother needed regular blood tests for her diabetes. DiagnoCart has been a blessing as we don't have to take her to the lab anymore."</p>
+                    <div class="mt-4 flex items-center">
+                        <div class="bg-blue-200 rounded-full p-1">
+                            <svg class="h-6 w-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24" aria-label="User Avatar">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="text-sm font-semibold text-gray-800">Priya Sharma</h4>
+                            <p class="text-xs text-gray-600">Teacher, Madhya Pradesh</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-5 shadow-sm">
+                    <p class="text-gray-700">"DiagnoCart has transformed healthcare in our village. Patients no longer delay tests due to travel constraints. The digital reports are delivered promptly."</p>
+                    <div class="mt-4 flex items-center">
+                        <div class="bg-blue-200 rounded-full p-1">
+                            <svg class="h-6 w-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24" aria-label="User Avatar">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="text-sm font-semibold text-gray-800">Dr. Anand Verma</h4>
+                            <p class="text-xs text-gray-600">Rural Health Practitioner</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-10 bg-blue-600">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <h2 class="text-2xl md:text-3xl font-bold text-white">Ready to experience hassle-free diagnostics?</h2>
+            <p class="mt-3 text-blue-100">Book your first test today and enjoy the convenience of home sample collection.</p>
+            <div class="mt-6">
+                <a href="book-test.html" class="bg-white hover:bg-gray-100 text-blue-600 px-5 py-2 rounded-lg font-medium shadow-md mx-2 mb-2">Book a Test Now</a>
+                 <a href="contact.html" class="bg-transparent hover:bg-blue-700 text-white border border-white px-5 py-2 rounded-lg font-medium mx-2 mb-2">Contact Us</a>
+                <!-- <button class="bg-transparent hover:bg-blue-700 text-white border border-white px-5 py-2 rounded-lg font-medium mx-2 mb-2 ">Contact Us</button> -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center">
+                        <svg class="h-6 w-6 text-blue-400" fill="currentColor" viewBox="0 0 24 24" aria-label="DiagnoCart Logo">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                        </svg>
+                        <span class="ml-2 text-lg font-bold">DiagnoCart</span>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-400">Bringing diagnostic services to your doorstep, making healthcare accessible for everyone.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Quick Links</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="home.html" class="text-gray-400 hover:text-blue-400">Home</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Services</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Contact Us</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center">
+                            <svg class="h-4 w-4 text-blue-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-label="Phone Icon">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            </svg>
+                            <span class="text-gray-400">+91 1234567890</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="h-4 w-4 text-blue-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-label="Email Icon">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            <span class="text-gray-400">support@diagnoKart.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-700 pt-6 text-center text-sm text-gray-400">
+                © 2025 DiagnoKart. All rights reserved.
+                <div class="mt-4 md:mt-0 flex items-center">
+                    <!-- Language Selector -->
+                    <div class="relative mr-4">
+                        <select id="language-selector" class="bg-gray-700 text-white rounded py-1 px-3 appearance-none pr-8 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option value="en">English</option>
+                            <option value="hi">हिंदी</option>
+                            <option value="bn">বাংলা</option>
+                            <option value="te">తెలుగు</option>
+                            <option value="ta">தமிழ்</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Accessibility Button -->
+                    <button id="accessibility-btn" class="bg-gray-700 text-white rounded py-1 px-3 flex items-center hover:bg-gray-600 transition">
+                        <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12zm-1-5a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zm-3-2a1 1 0 100-2H4a1 1 0 100 2h2zm8-2a1 1 0 100-2h2a1 1 0 100 2h-2z" clip-rule="evenodd"></path>
+                        </svg>
+                        Accessibility
+                    </button>
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </footer>
+        <!-- Accessibility Panel -->
+    <div id="accessibility-panel" class="accessibility-panel fixed bottom-0 left-0 right-0 bg-white shadow-lg p-4 z-50 hidden">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-blue-800">Accessibility Options</h3>
+                <button id="close-accessibility" class="text-gray-600 hover:text-gray-800">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Text Size -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">Text Size</h4>
+                    <div class="flex space-x-2">
+                        <button class="text-size-btn bg-white border border-gray-300 px-3 py-1 rounded text-sm" data-size="small">A</button>
+                        <button class="text-size-btn bg-white border border-gray-300 px-3 py-1 rounded text-base" data-size="medium">A</button>
+                        <button class="text-size-btn bg-white border border-gray-300 px-3 py-1 rounded text-lg" data-size="large">A</button>
+                    </div>
+                </div>
+                
+                <!-- Contrast -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">Contrast</h4>
+                    <div class="flex space-x-2">
+                        <button class="contrast-btn bg-white border border-gray-300 px-3 py-1 rounded" data-contrast="normal">Normal</button>
+                        <button class="contrast-btn bg-black text-white border border-gray-300 px-3 py-1 rounded" data-contrast="high">High</button>
+                    </div>
+                </div>
+                
+                <!-- Voice Support -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">Voice Support</h4>
+                    <button id="voice-support-btn" class="bg-blue-600 text-white px-3 py-1 rounded flex items-center">
+                        <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd"></path>
+                        </svg>
+                        Enable Voice
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+            // Accessibility Panel
+        const accessibilityBtn = document.getElementById('accessibility-btn');
+        const accessibilityPanel = document.getElementById('accessibility-panel');
+        const closeAccessibility = document.getElementById('close-accessibility');
+        
+   if (accessibilityBtn && accessibilityPanel && closeAccessibility) {
+        accessibilityBtn.addEventListener('click', () => {
+            // Toggle the 'hidden' class to show/hide the panel
+            accessibilityPanel.classList.toggle('hidden');
+        });
+        
+        closeAccessibility.addEventListener('click', () => {
+            // Add 'hidden' class to ensure the panel is hidden
+            accessibilityPanel.classList.add('hidden');
+        });
+    }
+              // Text Size Adjustment
+        const textSizeBtns = document.querySelectorAll('.text-size-btn');
+        
+        textSizeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const size = btn.getAttribute('data-size');
+                document.body.classList.remove('text-small', 'text-medium', 'text-large');
+                document.body.classList.add(`text-${size}`);
+                
+                // Update active button
+                textSizeBtns.forEach(b => b.classList.remove('ring-2', 'ring-blue-500'));
+                btn.classList.add('ring-2', 'ring-blue-500');
+                
+                // Apply text size
+                if (size === 'small') {
+                    document.body.style.fontSize = '0.9rem';
+                } else if (size === 'medium') {
+                    document.body.style.fontSize = '1rem';
+                } else if (size === 'large') {
+                    document.body.style.fontSize = '1.2rem';
+                }
+            });
+        });
+        
+        // Contrast Toggle
+        const contrastBtns = document.querySelectorAll('.contrast-btn');
+        
+        contrastBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const contrast = btn.getAttribute('data-contrast');
+                document.body.classList.remove('high-contrast');
+                
+                if (contrast === 'high') {
+                    document.body.classList.add('high-contrast');
+                    document.documentElement.style.setProperty('--bg-color', '#000');
+                    document.documentElement.style.setProperty('--text-color', '#fff');
+                    document.body.style.backgroundColor = '#000';
+                    document.body.style.color = '#fff';
+                } else {
+                    document.documentElement.style.setProperty('--bg-color', '');
+                    document.documentElement.style.setProperty('--text-color', '');
+                    document.body.style.backgroundColor = '';
+                    document.body.style.color = '';
+                }
+                
+                // Update active button
+                contrastBtns.forEach(b => b.classList.remove('ring-2', 'ring-blue-500'));
+                btn.classList.add('ring-2', 'ring-blue-500');
+            });
+        });
+        
+        // Voice Support
+        const voiceSupportBtn = document.getElementById('voice-support-btn');
+        let voiceEnabled = false;
+        
+        voiceSupportBtn.addEventListener('click', () => {
+            voiceEnabled = !voiceEnabled;
+            
+            if (voiceEnabled) {
+                voiceSupportBtn.innerHTML = `
+                    <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071a1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clip-rule="evenodd"></path>
+                    </svg>
+                    Voice Enabled
+                `;
+                voiceSupportBtn.classList.remove('bg-blue-600');
+                voiceSupportBtn.classList.add('bg-green-600');
+                
+                // Enable voice support functionality would go here
+                alert('Voice support enabled. Click on any text to have it read aloud.');
+                
+                // Add click listeners to headings and paragraphs
+                document.querySelectorAll('h1, h2, h3, p, a, button').forEach(el => {
+                    el.addEventListener('click', function() {
+                        if (voiceEnabled && window.speechSynthesis) {
+                            const text = this.textContent;
+                            const utterance = new SpeechSynthesisUtterance(text);
+                            window.speechSynthesis.speak(utterance);
+                        }
+                    });
+                });
+                
+            } else {
+                voiceSupportBtn.innerHTML = `
+                    <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071a1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clip-rule="evenodd"></path>
+                    </svg>
+                    Enable Voice
+                `;
+                voiceSupportBtn.classList.remove('bg-green-600');
+                voiceSupportBtn.classList.add('bg-blue-600');
+                
+                // Disable voice support
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                }
+            }
+        });
+     
+
+
+        // Book via Call Modal functionality
+        const bookViaCallBtn = document.getElementById('book-via-call-btn');
+        const modal = document.getElementById('book-via-call-modal');
+
+        bookViaCallBtn.addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        function submitForm() {
+            const fullName = document.getElementById('fullName').value;
+            const mobileNumber = document.getElementById('mobileNumber').value;
+            const city = document.getElementById('city').value;
+            const terms = document.getElementById('terms').checked;
+
+            if (!fullName || !mobileNumber || !city || !terms) {
+                alert('Please fill all required fields and agree to the T&C.');
+                return;
+            }
+
+            alert('Request submitted! You will receive a call back soon.');
+            document.getElementById('fullName').value = '';
+            document.getElementById('mobileNumber').value = '';
+            document.getElementById('city').value = '';
+            document.getElementById('terms').checked = false;
+            closeModal();
+        }
+
+        // Book via WhatsApp Modal functionality
+        const bookViaWhatsAppBtn = document.getElementById('book-via-whatsapp-btn');
+        const whatsappModal = document.getElementById('book-via-whatsapp-modal');
+
+        bookViaWhatsAppBtn.addEventListener('click', () => {
+            whatsappModal.style.display = 'flex';
+        });
+
+        function closeWhatsAppModal() {
+            whatsappModal.style.display = 'none';
+        }
+
+function submitWhatsAppForm() {
+    const fullName = document.getElementById('whatsappFullName').value;
+    const mobileNumber = document.getElementById('whatsappMobileNumber').value;
+    const city = document.getElementById('whatsappCity').value;
+    const terms = document.getElementById('whatsappTerms').checked;
+
+    if (!fullName || !mobileNumber || !city || !terms) {
+        alert('Please fill all required fields and agree to the T&C.');
+        return;
+    }
+
+    const whatsappNumber = "+917021520352"; 
+    const message = `Hello, I am ${fullName} from ${city}. I would like to book a diagnostic test. My mobile number is +91${mobileNumber}.`;
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+    window.open(whatsappLink, '_blank');
+}
+
+            // Clear form and close modal
+            document.getElementById('whatsappFullName').value = '';
+            document.getElementById('whatsappMobileNumber').value = '';
+            document.getElementById('whatsappCity').value = '';
+            document.getElementById('whatsappTerms').checked = false;
+            closeWhatsAppModal();
+
+
+    // Show Logout if logged in
+const authButton = document.getElementById('auth-button');
+if (localStorage.getItem('isLoggedIn') === 'true') {
+  authButton.textContent = 'Logout';
+  authButton.href = '#';
+authButton.addEventListener('click', (e) => {
+  e.preventDefault();
+  localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('userName');
+
+  showFlash('You have been logged out successfully.', 'success');
+
+  // Delay reload slightly so message is visible
+  setTimeout(() => {
+    window.location.reload();
+  }, 1000);
+});
+
+}  
+    // Show welcome message if logged in
+  const flashDiv = document.getElementById('flashMessage');
+  const userName = localStorage.getItem('userName');
+
+  if (localStorage.getItem('isLoggedIn') === 'true' && userName) {
+    flashDiv.textContent = `Welcome to DiagnoCart, ${userName}!`;
+
+    // Optional: Auto-hide after 5 seconds
+    setTimeout(() => {
+      flashDiv.textContent = '';
+    }, 5000);
+  }
+function showFlash(message, type = 'success') {
+  const flash = document.getElementById('flashMessage');
+  flash.textContent = message;
+  flash.classList.remove('hidden');
+
+  // Set color based on type
+  if (type === 'success') {
+    flash.classList.add('bg-green-500');
+    flash.classList.remove('bg-red-500');
+  } else {
+    flash.classList.add('bg-red-500');
+    flash.classList.remove('bg-green-500');
+  }
+
+  // Auto-hide after 4 seconds
+  setTimeout(() => {
+    flash.classList.add('hidden');
+    flash.textContent = '';
+  }, 4000);
+}
+
+    </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  const userName = localStorage.getItem('userName');
+  const loginLink = document.getElementById('auth-button'); // ✅ updated ID
+
+  if (isLoggedIn) {
+    // ✅ Change Login/Signup to Logout
+    if (loginLink) {
+      loginLink.textContent = 'Logout';
+      loginLink.href = '#';
+      loginLink.addEventListener('click', () => {
+        fetch('http://localhost:5000/api/auth/logout', {
+          method: 'POST',
+          credentials: 'include'
+        }).then(() => {
+          localStorage.clear();
+          location.reload();
+        });
+      });
+    }
+
+    // Optional greeting
+    const greeting = document.getElementById('userGreeting');
+    if (greeting && userName) {
+      greeting.textContent = `Welcome, ${userName}`;
+    }
+
+  } else {
+    // Protect booking/tracking pages
+    const isProtected = location.pathname.includes('book-test') || location.pathname.includes('track');
+    if (isProtected) {
+      alert('Please log in to continue.');
+      window.location.href = 'login-signup.html';
+    }
+  }
+});
+</script>
+
+
+</body>
+</html>

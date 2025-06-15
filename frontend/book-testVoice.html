@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Test - DiagnoCart</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #f5faff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 650px;
+      transition: transform 0.3s ease;
+    }
+    .container:hover {
+      transform: translateY(-5px);
+    }
+    h2 {
+      color: #1a3c5e;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 28px;
+      font-weight: 600;
+    }
+    p {
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 16px;
+    }
+    .form-row {
+      display: flex;
+      gap: 25px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      flex: 1;
+    }
+    label {
+      display: block;
+      color: #1a3c5e;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    label span.required {
+      color: #ef4444;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 14px;
+      color: #374151;
+      background-color: #f9fafb;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #1e40af;
+      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    }
+    textarea {
+      resize: none;
+      height: 80px;
+    }
+    .address-group {
+      display: flex;
+      gap: 15px;
+      align-items: flex-end;
+    }
+    .location-btn {
+      padding: 12px 15px;
+      background-color: #1e40af;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .location-btn:hover {
+      background-color: #1e3a8a;
+    }
+    .location-btn::before {
+      content: '📍';
+      font-size: 16px;
+    }
+    .buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    button {
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    .book-btn {
+      background-color: #1e40af;
+      color: white;
+      border: none;
+    }
+    .book-btn:hover {
+      background-color: #1e3a8a;
+      transform: translateY(-2px);
+    }
+    .book-btn::before {
+      content: '📅';
+      font-size: 16px;
+    }
+    .clear-btn {
+      background-color: white;
+      color: #1e40af;
+      border: 1px solid #1e40af;
+    }
+    .clear-btn:hover {
+      background-color: #f1f5f9;
+      transform: translateY(-2px);
+    }
+    .clear-btn::before {
+      content: '🗑️';
+      font-size: 16px;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 450px;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+    .modal-content:hover {
+      transform: translateY(-5px);
+    }
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #f1f5f9;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      font-size: 18px;
+      color: #6b7280;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .close-btn:hover {
+      background-color: #e5e7eb;
+      color: #1e40af;
+    }
+    .modal h3 {
+      color: #1a3c5e;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .modal p {
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+    .modal-btn {
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .track-btn {
+      background-color: #1e40af;
+      color: white;
+      border: none;
+    }
+    .track-btn:hover {
+      background-color: #1e3a8a;
+      transform: translateY(-2px);
+    }
+    .modal-close-btn {
+      background-color: white;
+      color: #1e40af;
+      border: 1px solid #1e40af;
+    }
+    .modal-close-btn:hover {
+      background-color: #f1f5f9;
+      transform: translateY(-2px);
+    }
+    .mic-button {
+      padding: 12px 25px;
+      background-color: #10b981;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.3s ease;
+    }
+    .mic-button.listening {
+      background-color: #ef4444;
+    }
+    .mic-button:hover {
+      background-color: #059669;
+      transform: translateY(-2px);
+    }
+    .mic-button::before {
+      content: '🎤';
+      font-size: 16px;
+    }
+    .voice-suggestions {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #f1f5f9;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #6b7280;
+    }
+    .voice-status {
+      margin-top: 5px;
+      font-size: 14px;
+      color: #6b7280;
+    }
+    .phone-input-wrapper {
+      display: flex;
+      align-items: center;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: #f9fafb;
+    }
+    .phone-input-wrapper span {
+      background-color: #f1f5f9;
+      padding: 12px;
+      border-right: 1px solid #d1d5db;
+      font-size: 14px;
+      color: #374151;
+    }
+    .phone-input-wrapper input {
+      border: none;
+      outline: none;
+      flex: 1;
+      padding: 12px;
+      background-color: #f9fafb;
+    }
+    .phone-input-wrapper input:focus {
+      border-color: #1e40af;
+      box-shadow: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Book Your Test</h2>
+    <p>Fill in your details and we’ll arrange a home sample collection</p>
+    <form id="booking-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Full Name <span class="required">*</span></label>
+          <input type="text" id="name" name="name" placeholder="Full Name" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number <span class="required">*</span></label>
+          <div class="phone-input-wrapper">
+            <span>+91</span>
+            <input type="tel" id="phone" name="phone" placeholder="Phone Number" required>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="Email Address">
+        </div>
+        <div class="form-group">
+          <label for="age">Age <span class="required">*</span></label>
+          <input type="number" id="age" name="age" placeholder="Age" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="address">Complete Address <span class="required">*</span></label>
+        <div class="address-group">
+          <textarea id="address" name="address" placeholder="Enter your complete address for sample collection" required></textarea>
+          <button type="button" class="location-btn" onclick="getUserLocation()">Use My Location</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="test">Select Test Type <span class="required">*</span></label>
+          <select id="test" name="test" required>
+            <option value="">Choose a test</option>
+            <option value="blood-test">Blood Test</option>
+            <option value="x-ray">X-Ray</option>
+            <option value="mri">MRI</option>
+            <option value="ultrasound">Ultrasound</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="preferred-date">Preferred Date <span class="required">*</span></label>
+          <input type="date" id="preferred-date" name="preferred-date" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="preferred-time">Preferred Time Slot <span class="required">*</span></label>
+          <select id="preferred-time" name="preferred-time" required>
+            <option value="">Select time slot</option>
+            <option value="9am-11am">9:00 AM - 11:00 AM</option>
+            <option value="11am-1pm">11:00 AM - 1:00 PM</option>
+            <option value="1pm-3pm">1:00 PM - 3:00 PM</option>
+            <option value="3pm-5pm">3:00 PM - 5:00 PM</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="prescription">Upload Prescription (Optional)</label>
+          <input type="file" id="prescription" name="prescription">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="instructions">Special Instructions</label>
+        <textarea id="instructions" name="instructions" placeholder="Any special instructions for our collection team"></textarea>
+      </div>
+      <div class="form-group">
+        <button type="button" id="voice-assistant" class="mic-button">
+          Start Voice Assistant
+        </button>
+        <p id="voice-status" class="voice-status"></p>
+        <div id="voice-suggestions" class="voice-suggestions" style="display: none;">
+          <p>Try speaking: "My name is John"</p>
+          <p>Try speaking: "Phone number is 9876543210"</p>
+          <p>Try speaking: "Email is john@example.com"</p>
+          <p>Try speaking: "Age is 30"</p>
+          <p>Try speaking: "Address is 123 Main Street"</p>
+          <p>Try speaking: "Test is blood test"</p>
+          <p>Try speaking: "Preferred date is 15 June 2025"</p>
+          <p>Try speaking: "Time slot is 1 to 3"</p>
+          <p>Try speaking: "Time slot is 1-3"</p>
+          <p>Try speaking: "Time slot is one to three"</p>
+          <p>Try speaking: "Special instructions are fasting required"</p>
+        </div>
+      </div>
+      <div class="buttons">
+        <button type="submit" class="book-btn">Book Test Now</button>
+        <button type="button" id="clear-form" class="clear-btn">Clear Form</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal" id="track-status-popup">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeTrackStatusPopup()">×</button>
+      <h3>Test Booked Successfully!</h3>
+      <p>Would you like to track its status now?</p>
+      <div class="modal-buttons">
+        <button class="modal-btn track-btn" onclick="redirectToTrackStatus()">Track Status</button>
+        <button class="modal-btn modal-close-btn" onclick="closeTrackStatusPopup()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize SpeechRecognition
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+
+    if (recognition) {
+      recognition.continuous = false;
+      recognition.lang = 'en-US';
+      recognition.interimResults = true;
+    }
+
+    const voiceButton = document.getElementById('voice-assistant');
+    const voiceStatus = document.getElementById('voice-status');
+    const voiceSuggestions = document.getElementById('voice-suggestions');
+    const form = document.getElementById('booking-form');
+    const nameInput = document.getElementById('name');
+    const phoneInput = document.getElementById('phone');
+    const emailInput = document.getElementById('email');
+    const ageInput = document.getElementById('age');
+    const addressInput = document.getElementById('address');
+    const testSelect = document.getElementById('test');
+    const preferredDateInput = document.getElementById('preferred-date');
+    const preferredTimeSelect = document.getElementById('preferred-time');
+    const instructionsInput = document.getElementById('instructions');
+    const clearFormButton = document.getElementById('clear-form');
+
+    let isListening = false;
+
+    // Voice assistant toggle
+    voiceButton.addEventListener('click', () => {
+      if (!recognition) {
+        voiceStatus.textContent = 'Voice recognition not supported in this browser.';
+        return;
+      }
+
+      if (isListening) {
+        recognition.stop();
+        voiceButton.textContent = 'Start Voice Assistant';
+        voiceButton.classList.remove('listening');
+        voiceStatus.textContent = 'Voice assistant stopped.';
+        voiceSuggestions.style.display = 'none';
+        isListening = false;
+      } else {
+        recognition.start();
+        voiceButton.textContent = 'Stop Listening';
+        voiceButton.classList.add('listening');
+        voiceStatus.textContent = 'Listening... Speak clearly to fill the fields.';
+        voiceSuggestions.style.display = 'block';
+        isListening = true;
+      }
+    });
+
+    // Function to check for empty required fields and return an error message
+    const checkEmptyFields = () => {
+      const requiredFields = [
+        { input: nameInput, label: 'Full Name' },
+        { input: phoneInput, label: 'Phone Number' },
+        { input: ageInput, label: 'Age' },
+        { input: addressInput, label: 'Complete Address' },
+        { input: testSelect, label: 'Test Type' },
+        { input: preferredDateInput, label: 'Preferred Date' },
+        { input: preferredTimeSelect, label: 'Preferred Time Slot' }
+      ];
+
+      const emptyFields = requiredFields.filter(field => !field.input.value);
+      if (emptyFields.length > 0) {
+        const emptyFieldNames = emptyFields.map(field => field.label).join(', ');
+        return `Error: The following required fields are empty: ${emptyFieldNames}.`;
+      }
+      return '';
+    };
+
+    // Process speech results
+    recognition.onresult = (event) => {
+      let transcript = '';
+      let isFinal = false;
+
+      for (let i = 0; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          transcript = event.results[i][0].transcript.toLowerCase();
+          isFinal = true;
+        } else {
+          transcript = event.results[i][0].transcript.toLowerCase();
+        }
+      }
+
+      console.log(`Transcript: "${transcript}" (Final: ${isFinal})`);
+      let baseStatus = `Heard: "${transcript}"${isFinal ? '' : ' (interim)'}`;
+      let fieldAssigned = false;
+
+      if (!isFinal) {
+        voiceStatus.textContent = baseStatus;
+        return;
+      }
+
+      const containsKeyword = (keywords) => keywords.some(keyword => transcript.includes(keyword));
+
+      if (containsKeyword(['name is', 'my name is'])) {
+        const name = transcript.split(/name is|my name is/).pop()?.trim() || '';
+        nameInput.value = name.charAt(0).toUpperCase() + name.slice(1);
+        fieldAssigned = true;
+      }
+
+      if (containsKeyword(['email is', 'my email is', 'email', 'email address is', 'my email address'])) {
+        let emailPart = transcript.split(/email is|my email is|email|email address is|my email address/).pop()?.trim() || '';
+        emailPart = emailPart.replace(/\s+at\s+/g, '@').replace(/\s+/g, '');
+        if (emailPart.includes('@')) {
+          emailInput.value = emailPart;
+          fieldAssigned = true;
+        } else {
+          baseStatus = `${baseStatus} - Email format invalid. Say "Email is john@example.com" or "Email is john at example dot com".`;
+        }
+      }
+
+      if (containsKeyword(['phone is', 'phone number is', 'my phone is'])) {
+        let phone = transcript.split(/phone is|phone number is|my phone is/).pop()?.trim().replace(/\s/g, '') || '';
+        if (phone.startsWith('+91')) {
+          phone = phone.replace('+91', '');
+        }
+        if (/^\d{10}$/.test(phone)) {
+          phoneInput.value = phone;
+          fieldAssigned = true;
+        } else {
+          baseStatus = `${baseStatus} - Phone number must be 10 digits (e.g., "Phone is 9876543210").`;
+        }
+      }
+
+      if (containsKeyword(['age is', 'my age is'])) {
+        const age = transcript.split(/age is|my age is/).pop()?.trim().match(/\d+/) || [];
+        if (age[0]) {
+          ageInput.value = age[0];
+          fieldAssigned = true;
+        } else {
+          baseStatus = `${baseStatus} - Age must be a number (e.g., "Age is 30").`;
+        }
+      }
+
+      if (containsKeyword(['address is', 'my address is']) && !transcript.includes('@') && !transcript.includes(' at ')) {
+        const address = transcript.split(/address is|my address is/).pop()?.trim() || '';
+        addressInput.value = address.charAt(0).toUpperCase() + address.slice(1);
+        fieldAssigned = true;
+      }
+
+      if (containsKeyword(['test is', 'test type is'])) {
+        let test = transcript.split(/test is|test type is/).pop()?.trim() || '';
+        test = test.replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+        const testMap = {
+          'blood test': 'blood-test',
+          'x ray': 'x-ray',
+          'xray': 'x-ray',
+          'mri': 'mri',
+          'ultrasound': 'ultrasound'
+        };
+        const testValue = Object.keys(testMap).find(key => {
+          const normalizedKey = key.replace(/-/g, ' ').trim();
+          return test.includes(normalizedKey);
+        });
+        if (testValue) {
+          testSelect.value = testMap[testValue];
+          fieldAssigned = true;
+        } else {
+          baseStatus = `${baseStatus} - Test type not recognized. Try "Test is blood test", "Test is x ray", "Test is mri", or "Test is ultrasound".`;
+        }
+      }
+
+      if (containsKeyword(['date is', 'preferred date is'])) {
+        const date = transcript.split(/date is|preferred date is/).pop()?.trim() || '';
+        const dateMatch = date.match(/(\d{1,2})\s*(january|february|march|april|may|june|july|august|september|october|november|december)\s*(\d{4})/i);
+        if (dateMatch) {
+          const day = dateMatch[1].padStart(2, '0');
+          const monthMap = {
+            'january': '01', 'february': '02', 'march': '03', 'april': '04', 'may': '05', 'june': '06',
+            'july': '07', 'august': '08', 'september': '09', 'october': '10', 'november': '11', 'december': '12'
+          };
+          const monthName = dateMatch[2].toLowerCase();
+          const month = monthMap[monthName];
+          const year = dateMatch[3];
+          preferredDateInput.value = `${year}-${month}-${day}`;
+          fieldAssigned = true;
+        } else {
+          baseStatus = `${baseStatus} - Date format not recognized. Try "Date is 15 June 2025".`;
+        }
+      }
+
+      if (containsKeyword(['time is', 'preferred time is', 'time slot is', 'time slot', 'from'])) {
+        let time = transcript.split(/time is|preferred time is|time slot is|time slot|from/).pop()?.trim() || '';
+        time = time.replace(/a\.m\.|p\.m\.|am|pm/g, '').trim().toLowerCase();
+        
+        const timeMap = {
+          '9 to 11': '9am-11am',
+          '9 am to 11 am': '9am-11am',
+          'nine to eleven': '9am-11am',
+          '11 to 1': '11am-1pm',
+          '11 am to 1 pm': '11am-1pm',
+          'eleven to one': '11am-1pm',
+          '1 to 3': '1pm-3pm',
+          '1-3': '1pm-3pm',
+          '1 3': '1pm-3pm',
+          '1 dash 3': '1pm-3pm',
+          '1 hyphen 3': '1pm-3pm',
+          '1 pm to 3 pm': '1pm-3pm',
+          'one to three': '1pm-3pm',
+          'one dash three': '1pm-3pm',
+          'from 1 to 3': '1pm-3pm',
+          '3 to 5': '3pm-5pm',
+          '3-5': '3pm-5pm',
+          '3 5': '3pm-5pm',
+          '3 dash 5': '3pm-5pm',
+          '3 hyphen 5': '3pm-5pm',
+          '3 pm to 5 pm': '3pm-5pm',
+          'three to five': '3pm-5pm',
+          'three dash five': '3pm-5pm',
+          'from 3 to 5': '3pm-5pm'
+        };
+
+        let matchedTime = null;
+        for (const key of Object.keys(timeMap)) {
+          let pattern = key
+            .replace(/\s+/g, '\\s*')
+            .replace('9', '(9|nine)')
+            .replace('11', '(11|eleven)')
+            .replace('1', '(1|one)')
+            .replace('3', '(3|three)')
+            .replace('5', '(5|five)')
+            .replace('to', '(to|till|until)')
+            .replace('dash', '(dash|hyphen|-)')
+            .replace('-', '[-\\s]');
+          const regex = new RegExp(`\\b${pattern}\\b`, 'i');
+          if (regex.test(time)) {
+            matchedTime = timeMap[key];
+            break;
+          }
+        }
+
+        if (!matchedTime) {
+          if ((time.includes('1') || time.includes('one')) && (time.includes('3') || time.includes('three'))) {
+            matchedTime = '1pm-3pm';
+          } else if ((time.includes('3') || time.includes('three')) && (time.includes('5') || time.includes('five'))) {
+            matchedTime = '3pm-5pm';
+          }
+        }
+
+        if (matchedTime) {
+          preferredTimeSelect.value = matchedTime;
+          fieldAssigned = true;
+        } else {
+          baseStatus = `${baseStatus} - Time slot not recognized. Try "Time slot is 1 to 3", "Time slot is 1-3", "Time slot is one to three", or "Time slot is 3 to 5".`;
+        }
+      }
+
+      if (containsKeyword(['instructions are', 'special instructions are'])) {
+        const instructions = transcript.split(/instructions are|special instructions are/).pop()?.trim() || '';
+        instructionsInput.value = instructions.charAt(0).toUpperCase() + instructions.slice(1);
+        fieldAssigned = true;
+      }
+
+      if (!fieldAssigned) {
+        baseStatus = `${baseStatus} - Command not recognized. Check the suggestions below.`;
+      }
+
+      const emptyFieldsMessage = checkEmptyFields();
+      voiceStatus.textContent = baseStatus + (emptyFieldsMessage ? ' ' + emptyFieldsMessage : '');
+    };
+
+    recognition.onend = () => {
+      if (isListening) {
+        voiceButton.textContent = 'Start Voice Assistant';
+        voiceButton.classList.remove('listening');
+        voiceStatus.textContent = 'Voice assistant stopped.';
+        voiceSuggestions.style.display = 'none';
+        isListening = false;
+      }
+    };
+
+    recognition.onerror = (event) => {
+      voiceStatus.textContent = `Error: ${event.error}. Try again.`;
+      voiceButton.textContent = 'Start Voice Assistant';
+      voiceButton.classList.remove('listening');
+      voiceSuggestions.style.display = 'none';
+      isListening = false;
+    };
+
+    // Form submission
+    form.addEventListener('submit', async(e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const phoneNumber = '+91' + phoneInput.value;
+      formData.set('phone', phoneNumber);
+
+      const requiredFields = [
+        nameInput.value.trim(),
+        phoneInput.value.trim(),
+        ageInput.value,
+        addressInput.value.trim(),
+        testSelect.value,
+        preferredDateInput.value,
+        preferredTimeSelect.value
+      ];
+
+      if (requiredFields.some(field => !field)) {
+        alert('Please fill all required fields.');
+        return;
+      }
+
+      // Simulate successful booking
+// Prepare JSON data
+const bookingData = {
+  fullName: form.name.value.trim(),
+  phoneNumber: phoneInput.value.trim(),
+  email: form.email.value.trim(),
+  age: form.age.value,
+  address: form.address.value.trim(),
+  testType: form.test.value,
+  preferredDate: form['preferred-date'].value,
+  preferredTime: form['preferred-time'].value,
+  instructions: form.instructions.value
+};
+
+try {
+  const response = await fetch('https://diagnocart-backend.onrender.com/api/book-test', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(bookingData)
+  });
+
+  const result = await response.json();
+
+  if (response.ok) {
+    // ✅ Show success popup
+    document.getElementById('track-status-popup').style.display = 'flex';
+    clearForm();
+  } else {
+    alert(`❌ Booking failed: ${result.message || 'Unknown error'}`);
+  }
+} catch (err) {
+  console.error("❌ Error while booking:", err);
+  alert('❌ Could not connect to server. Please try again.');
+}
+
+
+    });
+
+    // Clear form
+    function clearForm() {
+      form.reset();
+      voiceStatus.textContent = '';
+      voiceSuggestions.style.display = 'none';
+      if (isListening) {
+        recognition.stop();
+        voiceButton.textContent = 'Start Voice Assistant';
+        voiceButton.classList.remove('listening');
+        isListening = false;
+      }
+    }
+
+    clearFormButton.addEventListener('click', clearForm);
+
+    // Modal functions
+    function closeTrackStatusPopup() {
+      document.getElementById('track-status-popup').style.display = 'none';
+    }
+
+    function redirectToTrackStatus() {
+      window.location.href = 'track.html';
+    }
+
+    // Geolocation
+    function getUserLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            fetchAddress(lat, lon);
+          },
+          (error) => {
+            alert('Unable to fetch location: ' + error.message);
+          }
+        );
+      } else {
+        alert('Geolocation is not supported by your browser.');
+      }
+    }
+
+    async function fetchAddress(lat, lon) {
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`);
+        const data = await response.json();
+        if (data && data.address) {
+          const addressParts = [];
+          if (data.address.road) addressParts.push(data.address.road);
+          if (data.address.city) addressParts.push(data.address.city);
+          if (data.address.state) addressParts.push(data.address.state);
+          if (data.address.postcode) addressParts.push(data.address.postcode);
+          if (data.address.country) addressParts.push(data.address.country);
+          const fullAddress = addressParts.join(', ');
+          addressInput.value = fullAddress || 'Address not found';
+        } else {
+          addressInput.value = 'Address not found';
+        }
+      } catch (error) {
+        addressInput.value = 'Error fetching address';
+        console.error('Error fetching address:', error);
+      }
+    }
+  </script>
+</body>
+</html>

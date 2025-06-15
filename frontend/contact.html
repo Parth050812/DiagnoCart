@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiagnoCart - Contact Us</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .hero-bg {
+            background-color: #e6efff;
+        }
+        .contact-form {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            color: #1a3c5e;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .form-group label span {
+            color: #ef4444;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+            color: #374151;
+            background-color: #f9fafb;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .form-group .phone-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-group .phone-prefix {
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background-color: #f9fafb;
+            color: #374151;
+            font-size: 14px;
+        }
+        .form-group .phone-input {
+            flex: 1;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #1e40af;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .submit-btn:hover {
+            background-color: #1e3a8a;
+            transform: translateY(-2px);
+        }
+        .contact-info-card {
+            background-color: #e6f4ff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        .contact-info-card i {
+            font-size: 24px;
+            color: #1a73e8;
+            margin-right: 15px;
+        }
+        .contact-info-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+        .contact-info-card p {
+            font-size: 14px;
+            color: #64b5f6;
+        }
+        @media (max-width: 768px) {
+            .contact-form,
+            .contact-info-card {
+                width: 90%;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <svg class="h-8 w-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24" aria-label="DiagnoCart Logo">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                    </svg>
+                    <span class="ml-2 text-2xl font-bold text-blue-600">DiagnoCart</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="index1.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Home</a>
+                    <a href="book-test.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Book Slot</a>
+                    <a href="#" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Upload Prescription</a>
+                    <a href="track.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Track Status</a>
+                    <a href="#" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Voice Booking</a>
+                    <a id="auth-button" href="login-signup.html" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">Login/Signup</a>
+                </div>
+                <div class="flex md:hidden items-center">
+                    <button id="mobile-menu-button" class="text-gray-500 hover:text-blue-600" aria-label="Toggle mobile menu">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Home</a>
+                <a href="book-test.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Book Slot</a>
+                <a href="#" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Upload Prescription</a>
+                <a href="track.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Track Status</a>
+                <a href="#" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Voice Booking</a>
+                <a href="login-signup.html" class="block mt-1 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium text-center">Login/Signup</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contact Section -->
+    <section class="hero-bg py-12">
+        <div class="max-w-6xl mx-auto px-4">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 text-center">Contact Us</h1>
+            <p class="mt-4 text-lg text-gray-600 text-center max-w-2xl mx-auto">We’re here to assist you with your diagnostic needs. Reach out to us via the form below or through our contact details.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
+                <!-- Contact Form -->
+                <div class="contact-form">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Send Us a Message</h2>
+                    <div class="form-group">
+                        <label for="fullName">Full Name <span>*</span></label>
+                        <input type="text" id="fullName" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address <span>*</span></label>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobileNumber">Mobile Number <span>*</span></label>
+                        <div class="phone-group">
+                            <span class="phone-prefix">+91</span>
+                            <input type="tel" id="mobileNumber" class="phone-input" placeholder="Enter your mobile number" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject <span>*</span></label>
+                        <select id="subject" required>
+                            <option value="">Select a subject</option>
+                            <option value="booking">Booking Assistance</option>
+                            <option value="test">Test Information</option>
+                            <option value="support">Technical Support</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message <span>*</span></label>
+                        <textarea id="message" placeholder="Write your message here" required></textarea>
+                    </div>
+                    <button class="submit-btn" onclick="submitContactForm()">Send Message</button>
+                </div>
+                <!-- Contact Information -->
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Get in Touch</h2>
+                    <div class="space-y-6">
+                        <div class="contact-info-card flex items-start">
+                            <i class="fas fa-phone-alt"></i>
+                            <div>
+                                <h3>Phone</h3>
+                                <p>+91 1234567890</p>
+                            </div>
+                        </div>
+                        <div class="contact-info-card flex items-start">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h3>Email</h3>
+                                <p>support@diagnoKart.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-info-card flex items-start">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h3>Address</h3>
+                                <p>123 Health Street, Mumbai, Maharashtra, India</p>
+                            </div>
+                        </div>
+                        <div class="contact-info-card flex items-start">
+                            <i class="fab fa-whatsapp"></i>
+                            <div>
+                                <h3>WhatsApp</h3>
+                                <p>+91 7021520352</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center">
+                        <svg class="h-6 w-6 text-blue-400" fill="currentColor" viewBox="0 0 24 24" aria-label="DiagnoCart Logo">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                        </svg>
+                        <span class="ml-2 text-lg font-bold">DiagnoCart</span>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-400">Bringing diagnostic services to your doorstep, making healthcare accessible for everyone.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Quick Links</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="index.html" class="text-gray-400 hover:text-blue-400">Home</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Services</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400">About Us</a></li>
+                        <li><a href="contact.html" class="text-gray-400 hover:text-blue-400">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Contact Us</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center">
+                            <svg class="h-4 w-4 text-blue-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-label="Phone Icon">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            </svg>
+                            <span class="text-gray-400">+91 1234567890</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="h-4 w-4 text-blue-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-label="Email Icon">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            <span class="text-gray-400">support@diagnoKart.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-700 pt-6 text-center text-sm text-gray-400">
+                © 2025 DiagnoKart. All rights reserved.
+                <div class="mt-4 md:mt-0 flex justify-center items-center">
+                    <!-- Language Selector -->
+                    <div class="relative mr-4">
+                        <select id="language-selector" class="bg-gray-700 text-white rounded py-1 px-3 appearance-none pr-8 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option value="en">English</option>
+                            <option value="hi">हिंदी</option>
+                            <option value="bn">বাং cac লা</option>
+                            <option value="te">తెలుగు</option>
+                            <option value="ta">தமிழ்</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <!-- Accessibility Button -->
+                    <button id="accessibility-btn" class="bg-gray-700 text-white rounded py-1 px-3 flex items-center hover:bg-gray-600 transition">
+                        <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12zm-1-5a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zm-3-2a1 1 0 100-2H4a1 1 0 100 2h2zm8-2a1 1 0 100-2h2a1 1 0 100 2h-2z" clip-rule="evenodd"></path>
+                        </svg>
+                        Accessibility
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Accessibility Panel -->
+    <div id="accessibility-panel" class="accessibility-panel fixed bottom-0 left-0 right-0 bg-white shadow-lg p-4 z-50 hidden">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-blue-800">Accessibility Options</h3>
+                <button id="close-accessibility" class="text-gray-600 hover:text-gray-800">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Text Size -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">Text Size</h4>
+                    <div class="flex space-x-2">
+                        <button class="text-size-btn bg-white border border-gray-300 px-3 py-1 rounded text-sm" data-size="small">A</button>
+                        <button class="text-size-btn bg-white border border-gray-300 px-3 py-1 rounded text-base" data-size="medium">A</button>
+                        <button class="text-size-btn bg-white border border-gray-300 px-3 py-1 rounded text-lg" data-size="large">A</button>
+                    </div>
+                </div>
+                <!-- Contrast -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">Contrast</h4>
+                    <div class="flex space-x-2">
+                        <button class="contrast-btn bg-white border border-gray-300 px-3 py-1 rounded" data-contrast="normal">Normal</button>
+                        <button class="contrast-btn bg-black text-white border border-gray-300 px-3 py-1 rounded" data-contrast="high">High</button>
+                    </div>
+                </div>
+                <!-- Voice Support -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">Voice Support</h4>
+                    <button id="voice-support-btn" class="bg-blue-600 text-white px-3 py-1 rounded flex items-center">
+                        <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd"></path>
+                        </svg>
+                        Enable Voice
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Mobile Menu and Form -->
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Accessibility Panel
+        const accessibilityBtn = document.getElementById('accessibility-btn');
+        const accessibilityPanel = document.getElementById('accessibility-panel');
+        const closeAccessibility = document.getElementById('close-accessibility');
+
+        if (accessibilityBtn && accessibilityPanel && closeAccessibility) {
+            accessibilityBtn.addEventListener('click', () => {
+                accessibilityPanel.classList.toggle('hidden');
+            });
+
+            closeAccessibility.addEventListener('click', () => {
+                accessibilityPanel.classList.add('hidden');
+            });
+        }
+
+        // Text Size Adjustment
+        const textSizeBtns = document.querySelectorAll('.text-size-btn');
+
+        textSizeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const size = btn.getAttribute('data-size');
+                document.body.classList.remove('text-small', 'text-medium', 'text-large');
+                document.body.classList.add(`text-${size}`);
+
+                textSizeBtns.forEach(b => b.classList.remove('ring-2', 'ring-blue-500'));
+                btn.classList.add('ring-2', 'ring-blue-500');
+
+                if (size === 'small') {
+                    document.body.style.fontSize = '0.9rem';
+                } else if (size === 'medium') {
+                    document.body.style.fontSize = '1rem';
+                } else if (size === 'large') {
+                    document.body.style.fontSize = '1.2rem';
+                }
+            });
+        });
+
+        // Contrast Toggle
+        const contrastBtns = document.querySelectorAll('.contrast-btn');
+
+        contrastBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const contrast = btn.getAttribute('data-contrast');
+                document.body.classList.remove('high-contrast');
+
+                if (contrast === 'high') {
+                    document.body.classList.add('high-contrast');
+                    document.documentElement.style.setProperty('--bg-color', '#000');
+                    document.documentElement.style.setProperty('--text-color', '#fff');
+                    document.body.style.backgroundColor = '#000';
+                    document.body.style.color = '#fff';
+                } else {
+                    document.documentElement.style.setProperty('--bg-color', '');
+                    document.documentElement.style.setProperty('--text-color', '');
+                    document.body.style.backgroundColor = '';
+                    document.body.style.color = '';
+                }
+
+                contrastBtns.forEach(b => b.classList.remove('ring-2', 'ring-blue-500'));
+                btn.classList.add('ring-2', 'ring-blue-500');
+            });
+        });
+
+        // Voice Support
+        const voiceSupportBtn = document.getElementById('voice-support-btn');
+        let voiceEnabled = false;
+
+        voiceSupportBtn.addEventListener('click', () => {
+            voiceEnabled = !voiceEnabled;
+
+            if (voiceEnabled) {
+                voiceSupportBtn.innerHTML = `
+                    <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071a1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clip-rule="evenodd"></path>
+                    </svg>
+                    Voice Enabled
+                `;
+                voiceSupportBtn.classList.remove('bg-blue-600');
+                voiceSupportBtn.classList.add('bg-green-600');
+
+                alert('Voice support enabled. Click on any text to have it read aloud.');
+
+                document.querySelectorAll('h1, h2, h3, p, a, button').forEach(el => {
+                    el.addEventListener('click', function() {
+                        if (voiceEnabled && window.speechSynthesis) {
+                            const text = this.textContent;
+                            const utterance = new SpeechSynthesisUtterance(text);
+                            window.speechSynthesis.speak(utterance);
+                        }
+                    });
+                });
+            } else {
+                voiceSupportBtn.innerHTML = `
+                    <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071a1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clip-rule="evenodd"></path>
+                    </svg>
+                    Enable Voice
+                `;
+                voiceSupportBtn.classList.remove('bg-green-600');
+                voiceSupportBtn.classList.add('bg-blue-600');
+
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                }
+            }
+        });
+
+        // Contact Form Submission
+     function submitContactForm() {
+  const fullName = document.getElementById('fullName').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const mobileNumber = document.getElementById('mobileNumber').value.trim();
+  const subject = document.getElementById('subject').value;
+  const message = document.getElementById('message').value.trim();
+
+  if (!fullName || !email || !mobileNumber || !subject || !message) {
+    alert('Please fill all required fields.');
+    return;
+  }
+
+  fetch('https://diagnocart-backend.onrender.com/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fullName, email, mobileNumber, subject, message })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message || 'Your message has been sent!');
+    document.getElementById('fullName').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('mobileNumber').value = '';
+    document.getElementById('subject').value = '';
+    document.getElementById('message').value = '';
+  })
+  .catch(err => {
+    console.error('❌ Contact form error:', err);
+    alert('Something went wrong. Please try again later.');
+  });
+}
+    </script>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  const userName = localStorage.getItem('userName');
+  const loginLink = document.getElementById('auth-button'); // ✅ updated ID
+
+  if (isLoggedIn) {
+    // ✅ Change Login/Signup to Logout
+    if (loginLink) {
+      loginLink.textContent = 'Logout';
+      loginLink.href = '#';
+      loginLink.addEventListener('click', () => {
+        fetch('http://localhost:5000/api/auth/logout', {
+          method: 'POST',
+          credentials: 'include'
+        }).then(() => {
+          localStorage.clear();
+          location.reload();
+        });
+      });
+    }
+
+    // Optional greeting
+    const greeting = document.getElementById('userGreeting');
+    if (greeting && userName) {
+      greeting.textContent = `Welcome, ${userName}`;
+    }
+
+  } else {
+    // Protect booking/tracking pages
+    const isProtected = location.pathname.includes('book-test') || location.pathname.includes('track');
+    if (isProtected) {
+      alert('Please log in to continue.');
+      window.location.href = 'login-signup.html';
+    }
+  }
+});
+</script>
+
+</body>
+</html>

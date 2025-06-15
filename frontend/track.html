@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Status - DiagnoCart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .hero-pattern {
+            background-color: #f0f9ff;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2393c5fd' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .accessibility-panel {
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .accessibility-panel.open {
+            transform: translateY(0);
+        }
+        .status-step {
+            position: relative;
+        }
+        .status-step::after {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 50%;
+            width: 100%;
+            height: 4px;
+            background-color: #e5e7eb;
+            z-index: -1;
+        }
+        .status-step:last-child::after {
+            display: none;
+        }
+        .status-step.active .status-icon {
+            background-color: #2563eb;
+            color: white;
+        }
+        .status-step.completed .status-icon {
+            background-color: #10b981;
+            color: white;
+        }
+        .status-step.active::after {
+            background-color: #93c5fd;
+        }
+        .status-step.completed::after {
+            background-color: #10b981;
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+            }
+        }
+        .status-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px 0;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.status-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 100px;
+  transition: transform 0.3s ease;
+}
+
+.status-step:hover {
+  transform: scale(1.05);
+}
+
+.status-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #e5e7eb; /* Light gray for default */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-size: 20px;
+  margin-bottom: 8px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.status-step.active .status-icon {
+  background-color: #3b82f6; /* Blue for current */
+  color: white;
+}
+
+.status-step.completed .status-icon {
+  background-color: #10b981; /* Green for completed */
+  color: white;
+}
+
+.step-label {
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  color: #374151;
+}
+
+.icon-check {
+  width: 22px;
+  height: 22px;
+}
+  
+/* Modal Overlay */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* dimmed background */
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal Box */
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease;
+  position: relative;
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Close Button */
+.modal .close-btn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #555;
+  cursor: pointer;
+}
+
+/* Form Group Styling */
+.form-group {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.phone-group {
+  display: flex;
+  align-items: center;
+}
+
+.phone-prefix {
+  background-color: #f3f4f6;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  font-size: 14px;
+}
+
+.phone-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  font-size: 14px;
+  outline: none;
+}
+
+/* Button */
+.submit-btn {
+  margin-top: 25px;
+  background-color: #3b82f6;
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submit-btn:hover {
+  background-color: #2563eb;
+}
+
+/* Animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+  .status-note {
+  margin-top: 12px;
+  font-size: 16px;
+  color: green;
+  font-weight: 500;
+}
+.hidden {
+  display: none;
+}
+
+
+    </style>
+</head>
+<body class="bg-blue-50">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center">
+                <svg class="h-10 w-10 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                </svg>
+                <span class="ml-2 text-2xl font-bold text-blue-600">DiagnoCart</span>
+            </div>
+            
+            <div class="hidden md:flex space-x-6">
+                <a href="index1.html" class="text-gray-600 hover:text-blue-600 transition">Home</a>
+                <a href="book-test.html" class="text-gray-600 hover:text-blue-600 transition">Book Test</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600 transition">Upload Prescription</a>
+                <a href="track.html" class="text-blue-800 font-medium">Track Status</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600 transition">Voice Booking</a>
+            </div>
+            
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white pb-4 px-4">
+            <a href="#" class="block py-2 text-gray-600">Home</a>
+            <a href="#" class="block py-2 text-gray-600">Book Test</a>
+            <a href="#" class="block py-2 text-gray-600">Upload Prescription</a>
+            <a href="#" class="block py-2 text-blue-800 font-medium">Track Status</a>
+            <a href="#" class="block py-2 text-gray-600">Voice Booking</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-pattern py-12">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-800 mb-4">Track Your Test Status</h1>
+            <p class="text-lg text-gray-700 max-w-2xl mx-auto">Enter your phone number or booking ID to check the current status of your diagnostic test request.</p>
+        </div>
+    </section>
+
+    <!-- Track Status Form -->
+    <section class="py-8 md:py-12">
+        <div class="container mx-auto px-4">
+            <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 md:p-8">
+                <form id="track-form" class="space-y-6" autocomplete="off">
+                    <div>
+                        <label for="track-input" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <input type="text" id="track-input" name="track-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Enter phone number">
+                        <p class="mt-2 text-sm text-gray-500">Example: +91 98765 43210</p>
+                    </div>
+                    
+                    <div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg shadow transition transform hover:scale-105">
+                            Track Status
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+      <!-- Add this inside #status-results or nearby -->
+   <div id="report-message" class="status-note hidden"></div>
+
+    <!-- Status Results (Hidden by default) -->
+    <section id="status-results" class="py-8 md:py-12 hidden">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 md:p-8">
+                <!-- Booking Details -->
+                <div class="mb-8 border-b border-gray-200 pb-6">
+                    <h2 class="text-2xl font-bold text-blue-800 mb-4">Booking Details</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500">Booking ID</p>
+                            <p class="font-medium" id="booking-id">DC-12345</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Test Type</p>
+                            <p class="font-medium" id="test-type">Complete Blood Count (CBC)</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Booked On</p>
+                            <p class="font-medium" id="booked-date">15 May 2023</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Patient Name</p>
+                            <p class="font-medium" id="patient-name">Rahul Sharma</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Status Tracker -->
+                <div>
+                    <h2 class="text-2xl font-bold text-blue-800 mb-6">Current Status</h2>
+                    
+                    <div class="relative">
+                        <div class="flex justify-between mb-16">
+                            <div class="status-container">
+                            <!-- Step 1: Requested -->
+                            <div class="status-step">
+                                <div class="status-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon-check" viewBox="0 0 24 24" fill="currentColor">
+                               <path d="M20.285 6.709a1 1 0 00-1.414-1.418l-9.176 9.176-4.242-4.242a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0l10-10z" />
+                               </svg>
+                                </div>
+                                <div class="step-label">Report Requested</div>
+                            </div>
+                            
+                            <!-- Step 2: Pickup Scheduled -->
+                            <div class="status-step">
+                                <div class="status-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon-check" viewBox="0 0 24 24" fill="currentColor">
+                                  <path d="M20.285 6.709a1 1 0 00-1.414-1.418l-9.176 9.176-4.242-4.242a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0l10-10z" />
+                                  </svg>
+                                </div>
+                                <div class="step-label">Pickup Scheduled</div>
+                            </div>
+                            
+                            <!-- Step 3: Sample Collected -->
+                            <div class="status-step">
+                                <div class="status-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon-check" viewBox="0 0 24 24" fill="currentColor">
+                             <path d="M20.285 6.709a1 1 0 00-1.414-1.418l-9.176 9.176-4.242-4.242a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0l10-10z" />
+                             </svg>
+                                </div>
+                                <div class="step-label">Sample Collected</div>
+                            </div>
+                            
+                            <!-- Step 4: Report in Process -->
+                            <div class="status-step">
+                                <div class="status-icon">
+                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon-check" viewBox="0 0 24 24" fill="currentColor">
+                                   <path d="M20.285 6.709a1 1 0 00-1.414-1.418l-9.176 9.176-4.242-4.242a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0l10-10z" />
+                                    </svg>
+                                </div>
+                                  <div class="step-label">Report in Process</div>
+                            </div>
+                            
+                            <!-- Step 5: Report Ready -->
+                            <div class="status-step">
+                                <div class="status-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon-check" viewBox="0 0 24 24" fill="currentColor">
+                                 <path d="M20.285 6.709a1 1 0 00-1.414-1.418l-9.176 9.176-4.242-4.242a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0l10-10z" />
+                                 </svg>
+                                </div>
+                                <div class="step-label">Report<br>Ready</div>
+                            </div>
+                         </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Status Message -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-blue-800">Status Update</h3>
+                                <div class="mt-2 text-sm text-blue-700">
+                                    <p id="status-message">Your sample has been collected and is on the way to our lab. The estimated time for your report to be ready is 24-48 hours.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Estimated Time -->
+                    <div class="mb-6">
+                        <p class="text-gray-600">Estimated completion time:</p>
+                        <p class="text-lg font-semibold text-blue-800" id="estimated-time">17 May 2023, by 6:00 PM</p>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="openWhatsAppStatusModal()" class=" whatsapp-btn bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg shadow transition">
+                            Get Status On WhatsApp
+                        </button>
+                        <a href="/contact.html" class="bg-white border-2 border-blue-600 text-blue-600 font-medium py-2 px-6 rounded-lg shadow hover:bg-blue-50 transition">
+                            Contact Support
+                        </a>
+                        <div class="modal" id="whatsapp-status-modal">
+                        <div class="modal-content">
+                      <button class="close-btn" onclick="closeWhatsAppStatusModal()">×</button>
+                      <h3>Get Test Status via WhatsApp</h3>
+
+                           <div class="form-group">
+                             <label for="waStatusPhone">Enter Phone Number <span>*</span></label>
+                           <div class="phone-group">
+                           <span class="phone-prefix">+91</span>
+                          <input type="tel" id="waStatusPhone" placeholder="Enter your number">
+                         </div>
+                         </div>
+
+                       <button class="submit-btn" onclick="sendStatusViaWhatsApp()">Open WhatsApp</button>
+                       </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-blue-800 mb-8">Frequently Asked Questions</h2>
+            
+            <div class="max-w-3xl mx-auto space-y-6">
+                <div class="bg-blue-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-2">How long does it take to get my test results?</h3>
+                    <p class="text-gray-700">Most routine tests are processed within 24-48 hours after sample collection. Specialized tests may take 3-5 days. You'll receive an SMS notification when your report is ready.</p>
+                </div>
+                
+                <div class="bg-blue-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-2">What if I don't have my booking ID?</h3>
+                    <p class="text-gray-700">No problem! You can track your test status using the phone number you provided during booking. Our system will show all active bookings associated with your number.</p>
+                </div>
+                
+                <div class="bg-blue-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-2">How will I receive my test report?</h3>
+                    <p class="text-gray-700">You'll receive your report via SMS and email. You can also download it from our website or app. If you've requested a physical copy, it will be delivered to your address.</p>
+                </div>
+                
+                <div class="bg-blue-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-2">What if I need to reschedule my sample collection?</h3>
+                    <p class="text-gray-700">You can reschedule your appointment through our app, website, or by calling our customer support at 1-800-DIAGNO-CART at least 4 hours before your scheduled pickup time.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-10">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center">
+                        <svg class="h-8 w-8 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                        </svg>
+                        <span class="ml-2 text-xl font-bold">DiagnoCart</span>
+                    </div>
+                    <p class="mt-2 text-gray-400">Bringing diagnostic services to rural communities</p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3">Services</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Blood Tests</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Urine Tests</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Health Packages</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">COVID Testing</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3">Company</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">About Us</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Careers</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Partners</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Contact</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-span-2 md:col-span-1">
+                        <h3 class="text-lg font-semibold mb-3">Contact Us</h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 mr-2 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                                </svg>
+                                 <span class="text-gray-400">+91 1234567890</span>
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 mr-2 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                                </svg>
+                                <span class="text-gray-400">support@diagnocart.com</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 border-t border-gray-700 pt-6 text-center text-sm text-gray-400">
+                <p class="text-gray-400">© 2025 DiagnoCart. All rights reserved.</p>
+                
+                <div class="mt-4 md:mt-0 flex items-center justify-center">
+                    <!-- Language Selector -->
+                    <div class="relative mr-4">
+                        <select id="language-selector" class="bg-gray-700 text-white rounded py-1 px-3 appearance-none pr-8 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option value="en">English</option>
+                            <option value="hi">हिंदी</option>
+                            <option value="bn">বাংলা</option>
+                            <option value="te">తెలుగు</option>
+                            <option value="ta">தமிழ்</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Accessibility Button -->
+                    <button id="accessibility-btn" class="bg-gray-700 text-white rounded py-1 px-3 flex items-center hover:bg-gray-600 transition">
+                        <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12zm-1-5a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zm-3-2a1 1 0 100-2H4a1 1 0 100 2h2zm8-2a1 1 0 100-2h2a1 1 0 100 2h-2z" clip-rule="evenodd"></path>
+                        </svg>
+                        Accessibility
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Accessibility Panel -->
+    <div id="accessibility-panel" class="accessibility-panel fixed bottom-0 left-0 right-0 bg-white shadow-lg p-4 z-50">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-blue-800">Accessibility Options</h3>
+                <button id="close-accessibility" class="text-gray-600 hover:text-gray-800">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Text Size -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">Text Size</h4>
+                    <div class="flex space-x-2">
+                        <button class="text-size-btn bg-white border border-gray-300 px-3 py-1 rounded text-sm" data-size="small">A</button>
+                        <button class="text-size-btn bg-white border border-gray-300 px-3 py-1 rounded text-base" data-size="medium">A</button>
+                        <button class="text-size-btn bg-white border border-gray-300 px-3 py-1 rounded text-lg" data-size="large">A</button>
+                    </div>
+                </div>
+                
+                <!-- Contrast -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">Contrast</h4>
+                    <div class="flex space-x-2">
+                        <button class="contrast-btn bg-white border border-gray-300 px-3 py-1 rounded" data-contrast="normal">Normal</button>
+                        <button class="contrast-btn bg-black text-white border border-gray-300 px-3 py-1 rounded" data-contrast="high">High</button>
+                    </div>
+                </div>
+                
+                <!-- Voice Support -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">Voice Support</h4>
+                    <button id="voice-support-btn" class="bg-blue-600 text-white px-3 py-1 rounded flex items-center">
+                        <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071a1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clip-rule="evenodd"></path>
+                        </svg>
+                        Enable Voice
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Accessibility Panel
+        const accessibilityBtn = document.getElementById('accessibility-btn');
+        const accessibilityPanel = document.getElementById('accessibility-panel');
+        const closeAccessibility = document.getElementById('close-accessibility');
+        
+        accessibilityBtn.addEventListener('click', () => {
+            accessibilityPanel.classList.toggle('open');
+        });
+        
+        closeAccessibility.addEventListener('click', () => {
+            accessibilityPanel.classList.remove('open');
+        });
+        
+        // Text Size Adjustment
+        const textSizeBtns = document.querySelectorAll('.text-size-btn');
+        
+        textSizeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const size = btn.getAttribute('data-size');
+                document.body.classList.remove('text-small', 'text-medium', 'text-large');
+                document.body.classList.add(`text-${size}`);
+                
+                // Update active button
+                textSizeBtns.forEach(b => b.classList.remove('ring-2', 'ring-blue-500'));
+                btn.classList.add('ring-2', 'ring-blue-500');
+                
+                // Apply text size
+                if (size === 'small') {
+                    document.body.style.fontSize = '0.9rem';
+                } else if (size === 'medium') {
+                    document.body.style.fontSize = '1rem';
+                } else if (size === 'large') {
+                    document.body.style.fontSize = '1.2rem';
+                }
+            });
+        });
+        
+        // Contrast Toggle
+        const contrastBtns = document.querySelectorAll('.contrast-btn');
+        
+        contrastBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const contrast = btn.getAttribute('data-contrast');
+                document.body.classList.remove('high-contrast');
+                
+                if (contrast === 'high') {
+                    document.body.classList.add('high-contrast');
+                    document.documentElement.style.setProperty('--bg-color', '#000');
+                    document.documentElement.style.setProperty('--text-color', '#fff');
+                    document.body.style.backgroundColor = '#000';
+                    document.body.style.color = '#fff';
+                } else {
+                    document.documentElement.style.setProperty('--bg-color', '');
+                    document.documentElement.style.setProperty('--text-color', '');
+                    document.body.style.backgroundColor = '';
+                    document.body.style.color = '';
+                }
+                
+                // Update active button
+                contrastBtns.forEach(b => b.classList.remove('ring-2', 'ring-blue-500'));
+                btn.classList.add('ring-2', 'ring-blue-500');
+            });
+        });
+        
+        // Voice Support
+        const voiceSupportBtn = document.getElementById('voice-support-btn');
+        let voiceEnabled = false;
+        
+        voiceSupportBtn.addEventListener('click', () => {
+            voiceEnabled = !voiceEnabled;
+            
+            if (voiceEnabled) {
+                voiceSupportBtn.innerHTML = `
+                    <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071a1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clip-rule="evenodd"></path>
+                    </svg>
+                    Voice Enabled
+                `;
+                voiceSupportBtn.classList.remove('bg-blue-600');
+                voiceSupportBtn.classList.add('bg-green-600');
+                
+                alert('Voice support enabled. Click on any text to have it read aloud.');
+                
+                document.querySelectorAll('h1, h2, h3, p, a, button').forEach(el => {
+                    el.addEventListener('click', function() {
+                        if (voiceEnabled && window.speechSynthesis) {
+                            const text = this.textContent;
+                            const utterance = new SpeechSynthesisUtterance(text);
+                            window.speechSynthesis.speak(utterance);
+                        }
+                    });
+                });
+                
+            } else {
+                voiceSupportBtn.innerHTML = `
+                    <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071a1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clip-rule="evenodd"></path>
+                    </svg>
+                    Enable Voice
+                `;
+                voiceSupportBtn.classList.remove('bg-green-600');
+                voiceSupportBtn.classList.add('bg-blue-600');
+                
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                }
+            }
+        });
+        
+        // Track Form Submission
+        const trackForm = document.getElementById('track-form');
+        const statusResults = document.getElementById('status-results');
+        
+trackForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const trackInput = document.getElementById('track-input').value.trim();
+
+  if (!trackInput || trackInput.length !== 10) {
+    alert('Please enter a valid 10-digit phone number');
+    return;
+  }
+
+  try {
+    const res = await fetch(fetch(`https://diagnocart-backend.onrender.com/api/track?phone=${trackInput}`)
+);
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (jsonErr) {
+      console.error("❌ Failed to parse JSON:", jsonErr);
+      alert("Server returned an invalid response.");
+      return;
+    }
+
+    if (!res.ok) {
+      alert(data.message || 'No booking found');
+      return;
+    }
+   const reportMsg = document.getElementById("report-message");
+
+if (data.currentStatus === 'Report Ready' && data.reportSent) {
+  reportMsg.textContent = `✅ Your diagnostic report has been sent to ${data.email}`;
+  reportMsg.classList.remove("hidden");
+
+  // ✅ Hide booking status details
+  statusResults.classList.add("hidden");
+  return;
+} else {
+  reportMsg.textContent = '';
+  reportMsg.classList.add("hidden");
+  statusResults.classList.remove("hidden");
+}
+
+
+
+    // ✅ Store for WhatsApp/SMS reuse
+    window.lastTrackedData = data;
+
+    // Update UI
+    document.getElementById('booking-id').textContent = data._id;
+    document.getElementById('test-type').textContent = data.testType;
+    document.getElementById('booked-date').textContent = new Date(data.createdAt).toLocaleDateString();
+    document.getElementById('patient-name').textContent = data.fullName;
+    document.getElementById('estimated-time').textContent = new Date(data.preferredDate).toLocaleDateString();
+
+    document.getElementById('status-message').textContent = {
+      'Requested': 'Your request has been received and will be processed shortly.',
+      'Pickup Scheduled': 'Your sample collection is scheduled and will be picked up soon.',
+      'Sample Collected': 'Your sample has been collected and is being transported to the lab.',
+      'Report in Process': 'Your sample is being analyzed in our lab.',
+      'Report Ready': 'Your report is ready. Check Your Email to Download the report.'
+    }[data.currentStatus] || 'Status information not available.';
+
+    // Update progress tracker
+const steps = ['Requested', 'Pickup Scheduled', 'Sample Collected', 'Report in Process', 'Report Ready'];
+const currentIndex = steps.indexOf(data.currentStatus);
+
+console.log("📦 Status:", data.currentStatus, "Index:", currentIndex);
+
+document.querySelectorAll('.status-step').forEach((el, i) => {
+  el.classList.remove('active', 'completed');
+
+  if (i < currentIndex) {
+    el.classList.add('completed');
+  } else if (i === currentIndex) {
+    el.classList.add('active');
+  }
+});
+
+
+    statusResults.classList.remove('hidden');
+    statusResults.scrollIntoView({ behavior: 'smooth' });
+
+  } catch (err) {
+    console.error('❌ Tracking error:', err?.message || err);
+    alert('Something went wrong while tracking the booking.');
+  }
+});
+
+
+  function openWhatsAppStatusModal() {
+    document.getElementById('whatsapp-status-modal').style.display = 'flex';
+  }
+
+  function closeWhatsAppStatusModal() {
+    document.getElementById('whatsapp-status-modal').style.display = 'none';
+  }
+
+  function sendStatusViaWhatsApp() {
+    const phone = document.getElementById('waStatusPhone').value.trim();
+
+    if (!/^\d{10}$/.test(phone)) {
+      alert("Please enter a valid 10-digit phone number.");
+      return;
+    }
+
+    // Use the latest tracked data (fetched when user searched)
+    const status = window.lastTrackedData?.currentStatus || "Unknown";
+
+    const whatsappNumber = "+917021520352"; // your official WhatsApp number
+    const message = `Hello, I would like to know the status of my diagnostic test. My registered phone number is +91${phone}. Current status: *${status}*.`;
+
+    const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+    window.open(link, '_blank');
+    closeWhatsAppStatusModal();
+  }
+  const observer = new MutationObserver((mutations) => {
+  console.log('🔍 Mutation detected on #status-results', statusResults.className);
+});
+observer.observe(statusResults, { attributes: true });
+
+ </script>
+</body>
+</html>

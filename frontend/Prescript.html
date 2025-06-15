@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Your Prescription</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Added from Navbar-Footer.html -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Navbar styles from Navbar-Footer.html */
+        .nav {
+            background-color: white;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Main content container */
+        .main-content {
+            padding: 32px 16px;
+        }
+
+        /* Layout Container - IMPORTANT: Restored original grid layout */
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* Grid Layout - RESTORED ORIGINAL SIDE-BY-SIDE LAYOUT */
+        .grid {
+            display: flex;
+            gap: 32px;
+        }
+        .grid > .card {
+            flex: 1;
+            min-height: 600px; /* Ensure consistent height */
+        }
+
+        /* Rest of your original styles remain unchanged... */
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            margin-top: 0;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        /* Error Alert */
+        .error-alert {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        .error-alert .icon {
+            width: 20px;
+            height: 20px;
+            color: #ef4444;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .error-alert p {
+            color: #b91c1c;
+            margin: 0;
+        }
+
+        /* Make sure cards fill height within grid */
+        .card {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 24px;
+            margin-top: 0;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .upload-area.active {
+            border: 2px dashed #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .upload-area .icon {
+            width: 48px;
+            height: 48px;
+            color: #9ca3af;
+            margin: 0 auto 16px;
+            flex-shrink: 0;
+        }
+
+        .upload-area h3 {
+            font-size: 18px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            margin-top: 0;
+        }
+
+        .upload-area p {
+            color: #666;
+            margin-bottom: 16px;
+            margin-top: 0;
+        }
+
+        .upload-area .small-text {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 16px;
+        }
+
+        /* Button */
+        .button {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 24px;
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .button:hover {
+            background-color: #2563eb;
+        }
+
+        .button .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+
+        .hidden-input {
+            display: none;
+        }
+
+        /* Image Preview */
+        #uploadedFileDisplay {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .image-preview-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .image-preview {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .file-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            flex-shrink: 0;
+        }
+
+        .file-name {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .remove-button {
+            color: #dc2626;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Processing State */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .processing-container {
+            text-align: center;
+            padding: 48px 0;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 4px solid #3b82f6;
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        .processing-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .processing-subtitle {
+            color: #666;
+        }
+
+        /* Extracted Text Area */
+        #resultsState {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .extracted-text-section {
+            flex-shrink: 0;
+        }
+        .extracted-text-section h3 {
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            margin-top: 0;
+        }
+
+        .text-area {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 14px;
+            color: #374151;
+            white-space: pre-wrap;
+        }
+
+        /* Suggested Tests */
+        .recommended-tests-section {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .recommended-tests-section h3 {
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            margin-top: 0;
+        }
+
+        #suggestedTestsContainer {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .test-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .test-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .test-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .test-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            accent-color: #3b82f6;
+        }
+
+        .test-item .test-label {
+            flex: 1;
+            color: #374151;
+        }
+
+        .test-item .check-icon {
+            width: 20px;
+            height: 20px;
+            color: #10b981;
+        }
+
+        /* Confirm Button */
+        .confirm-button {
+            width: 100%;
+            background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 16px;
+        }
+
+        .confirm-button:hover {
+            transform: scale(1.02);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 48px 0;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .empty-state .icon {
+            width: 64px;
+            height: 64px;
+            color: #d1d5db;
+            margin: 0 auto 16px;
+        }
+
+        .empty-state p {
+            color: #9ca3af;
+            margin: 0;
+        }
+
+        /* Tips Section */
+        .tips-card {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 32px;
+        }
+
+        .tips-card h3 {
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 12px;
+            margin-top: 0;
+        }
+
+        .tips-card ul {
+            color: #1e40af;
+            font-size: 14px;
+            line-height: 1.6;
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        /* Spacer */
+        .spacer {
+            margin-bottom: 24px;
+        }
+
+        /* Utility for Lucide icons to match fill properties */
+        .lucide {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .accessibility-panel {
+          transform: translateY(100%);
+          transition: transform 0.3s ease;
+          position: fixed;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 50;
+          background-color: white;
+          box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .accessibility-panel.open {
+          transform: translateY(0);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .grid {
+                flex-direction: column; /* Stack columns on smaller screens */
+            }
+            .container {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navbar from Navbar-Footer.html -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <svg class="h-8 w-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24" aria-label="DiagnoCart Logo">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                    </svg>
+                    <span class="ml-2 text-2xl font-bold text-blue-600">DiagnoCart</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="index1.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Home</a>
+                    <a href="book-test.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Book Slot</a>
+                    <a href="updated-prescript.html" class="text-blue-600 font-semibold px-3 py-2 text-sm">Upload Prescription</a>
+                    <a href="track.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Track Status</a>
+                    <a href="book-testVoice.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Voice Booking</a>
+                    <a id="auth-button" href="login-signup.html" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">Login/Signup</a>
+                </div>
+                <div class="flex md:hidden items-center">
+                    <button id="mobile-menu-button" class="text-gray-500 hover:text-blue-600" aria-label="Toggle mobile menu">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="home.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Home</a>
+                <a href="#" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Book Slot</a>
+                <a href="#" class="block px-3 py-2 text-base font-medium text-blue-600 font-semibold">Upload Prescription</a>
+                <a href="#" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Track Status</a>
+                <a href="#" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Voice Booking</a>
+                <a href="login-signup.html" class="block mt-1 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium text-center">Login/Signup</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Original Prescript content - NOW WITH SIDE-BY-SIDE LAYOUT RESTORED -->
+    <div class="main-content">
+        <div class="container">
+            <div class="header">
+                <h1>Upload Your Prescription</h1>
+                <p>Upload an image of your prescription and we'll extract the recommended tests</p>
+            </div>
+
+            <div class="error-alert" id="errorAlert" style="display:none;">
+                <svg class="lucide icon" data-lucide="alert-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <p id="errorText"></p>
+            </div>
+
+            <!-- THIS IS THE CRUCIAL CHANGE - RESTORED FLEX GRID FOR SIDE-BY-SIDE LAYOUT -->
+            <div class="grid">
+                <!-- Left Card - Upload Prescription -->
+                <div class="card">
+                    <h2 class="card-title">Upload Prescription Image</h2>
+
+                    <div class="upload-area" id="uploadArea">
+                        <svg class="lucide icon" data-lucide="upload" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <h3>Drag & drop your prescription</h3>
+                        <p>or click to browse files</p>
+
+                        <input type="file" accept="image/*" id="file-upload" class="hidden-input">
+                        <label for="file-upload">
+                            <button class="button upload-button" type="button">
+                                <svg class="lucide icon" data-lucide="camera" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                                Choose File
+                            </button>
+                        </label>
+
+                        <p class="small-text">Supports: JPG, PNG, GIF (Max: 10MB)</p>
+                    </div>
+
+                    <div id="uploadedFileDisplay" style="display: none;">
+                        <div class="image-preview-container">
+                            <img id="imagePreview" src="" alt="Uploaded prescription" class="image-preview"/>
+                        </div>
+
+                        <div class="file-info">
+                            <span id="fileName" class="file-name"></span>
+                            <button id="removeButton" class="remove-button">Remove</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Card - Extracted Information -->
+                <div class="card">
+                    <h2 class="card-title">Extracted Information</h2>
+
+                    <div class="empty-state" id="emptyState">
+                        <svg class="lucide icon" data-lucide="file-text" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                        <p>Upload a prescription to see extracted text and test recommendations</p>
+                    </div>
+
+                    <div class="processing-container" id="processingState" style="display: none;">
+                        <div class="spinner"></div>
+                        <h3 class="processing-title">Processing Image...</h3>
+                        <p class="processing-subtitle">Extracting text from your prescription</p>
+                    </div>
+
+                    <div id="resultsState" style="display: none;">
+                        <div class="spacer extracted-text-section">
+                            <h3>Interpreted Medicines:</h3>
+                            <div class="text-area" id="interpretedMedicines"></div>
+                        </div>
+
+                        <div class="spacer extracted-text-section">
+                            <h3>Raw OCR Text (Cleaned):</h3>
+                            <div class="text-area" id="cleanedOcrTextDisplay"></div>
+                            <div class="text-area" id="gibberishInfoDisplay" style="margin-top: 10px; color: #888;"></div>
+                        </div>
+
+                        <div class="spacer recommended-tests-section">
+                            <h3>Recommended Tests:</h3>
+                            <div id="suggestedTestsContainer">
+                            </div>
+                        </div>
+
+                        <button class="confirm-button" id="confirmTestsButton" style="display: none;">
+                            Move to Home Page 
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tips-card">
+                <h3>Tips for Better Results:</h3>
+                <ul>
+                    <li>Ensure the prescription is clearly visible and well-lit</li>
+                    <li>Avoid shadows or glare on the document</li>
+                    <li>Keep the image focused and readable</li>
+                    <li>Include the entire prescription in the frame</li>
+                    <li>Make sure text is not blurry or cut off</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer from Navbar-Footer.html -->
+    <footer class="bg-gray-800 text-white py-10">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center">
+                        <svg class="h-8 w-8 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                        </svg>
+                        <span class="ml-2 text-xl font-bold">DiagnoCart</span>
+                    </div>
+                    <p class="mt-2 text-gray-400">Bringing diagnostic services to rural communities</p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3">Services</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Blood Tests</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Urine Tests</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Health Packages</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">COVID Testing</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3">Company</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">About Us</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Careers</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Partners</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Contact</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-span-2 md:col-span-1">
+                        <h3 class="text-lg font-semibold mb-3">Contact Us</h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 mr-2 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                                </svg>
+                                 <span class="text-gray-400">+91 1234567890</span>
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 mr-2 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                                </svg>
+                                <span class="text-gray-400">support@diagnocart.com</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 border-t border-gray-700 pt-6 text-center text-sm text-gray-400">
+                <p class="text-gray-400">© 2025 DiagnoCart. All rights reserved.</p>
+                
+                <div class="mt-4 md:mt-0 flex items-center justify-center">
+                    <!-- Language Selector -->
+                    <div class="relative mr-4">
+                        <select id="language-selector" class="bg-gray-700 text-white rounded py-1 px-3 appearance-none pr-8 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option value="en">English</option>
+                            <option value="hi">हिंदी</option>
+                            <option value="bn">বাংলা</option>
+                            <option value="te">తెలుగు</option>
+                            <option value="ta">தமிழ்</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Accessibility Button -->
+                    <button id="accessibility-btn" class="bg-gray-700 text-white rounded py-1 px-3 flex items-center hover:bg-gray-600 transition">
+                        <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12zm-1-5a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zm-3-2a1 1 0 100-2H4a1 1 0 100 2h2zm8-2a1 1 0 100-2h2a1 1 0 100 2h-2z" clip-rule="evenodd"></path>
+                        </svg>
+                        Accessibility
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Accessibility Panel -->
+    
+  
+
+    <div id="accessibility-panel" class="accessibility-panel fixed bottom-0 left-0 right-0 bg-white shadow-lg p-4 z-50">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-blue-800">Accessibility Options</h3>
+                <button id="close-accessibility" class="text-gray-600 hover:text-gray-800">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Text Size -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">Text Size</h4>
+                    <div class="flex space-x-2">
+                        <button class="text-size-btn bg-white border border-gray-300 px-3 py-1 rounded text-sm" data-size="small">A</button>
+                        <button class="text-size-btn bg-white border border-gray-300 px-3 py-1 rounded text-base" data-size="medium">A</button>
+                        <button class="text-size-btn bg-white border border-gray-300 px-3 py-1 rounded text-lg" data-size="large">A</button>
+                    </div>
+                </div>
+                
+                <!-- Contrast -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">Contrast</h4>
+                    <div class="flex space-x-2">
+                        <button class="contrast-btn bg-white border border-gray-300 px-3 py-1 rounded" data-contrast="normal">Normal</button>
+                        <button class="contrast-btn bg-black text-white border border-gray-300 px-3 py-1 rounded" data-contrast="high">High</button>
+                    </div>
+                </div>
+                
+                <!-- Voice Support -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h4 class="font-medium mb-2">Voice Support</h4>
+                    <button id="voice-support-btn" class="bg-blue-600 text-white px-3 py-1 rounded flex items-center">
+                        <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071a1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clip-rule="evenodd"></path>
+                        </svg>
+                        Enable Voice
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Mobile menu toggle from Navbar-Footer.html
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // Lucide icons setup (required for displaying SVG icons)
+        lucide.createIcons();
+
+        // State variables (mimicking React state)
+        let uploadedFile = null;
+        let ocrRawText = ''; 
+        let ocrCleanedText = ''; 
+        let ocrGibberishInfo = ''; 
+        let aiMedicines = []; 
+        let suggestedTests = []; 
+        let aiSummary = ''; 
+        let selectedTests = [];
+        let isProcessing = false;
+        let isDragOver = false;
+        let errorMessage = '';
+
+        // DOM elements
+        const uploadArea = document.getElementById('uploadArea');
+        const fileUploadInput = document.getElementById('file-upload');
+        const uploadedFileDisplay = document.getElementById('uploadedFileDisplay');
+        const imagePreview = document.getElementById('imagePreview');
+        const fileNameSpan = document.getElementById('fileName');
+        const removeButton = document.getElementById('removeButton');
+        const emptyState = document.getElementById('emptyState');
+        const processingState = document.getElementById('processingState');
+        const resultsState = document.getElementById('resultsState');
+        const interpretedMedicinesDiv = document.getElementById('interpretedMedicines');
+        const cleanedOcrTextDisplay = document.getElementById('cleanedOcrTextDisplay');
+        const gibberishInfoDisplay = document.getElementById('gibberishInfoDisplay');
+        const suggestedTestsContainer = document.getElementById('suggestedTestsContainer');
+        const confirmTestsButton = document.getElementById('confirmTestsButton');
+        const selectedTestsCountSpan = document.getElementById('selectedTestsCount');
+        const errorAlert = document.getElementById('errorAlert');
+        const errorText = document.getElementById('errorText');
+
+        // --- Helper Functions to Update UI based on State ---
+
+        function renderUI() {
+            // Error display
+            if (errorMessage) {
+                errorText.textContent = errorMessage;
+                errorAlert.style.display = 'flex';
+            } else {
+                errorAlert.style.display = 'none';
+            }
+
+            // Upload section display
+            if (!uploadedFile) {
+                uploadArea.style.display = 'flex';
+                uploadedFileDisplay.style.display = 'none';
+            } else {
+                uploadArea.style.display = 'none';
+                uploadedFileDisplay.style.display = 'flex';
+                imagePreview.src = URL.createObjectURL(uploadedFile);
+                fileNameSpan.textContent = uploadedFile.name;
+            }
+
+            // Right panel display
+            if (!uploadedFile) {
+                emptyState.style.display = 'flex';
+                processingState.style.display = 'none';
+                resultsState.style.display = 'none';
+            } else if (isProcessing) {
+                emptyState.style.display = 'none';
+                processingState.style.display = 'flex';
+                resultsState.style.display = 'none';
+            } else {
+                emptyState.style.display = 'none';
+                processingState.style.display = 'none';
+                resultsState.style.display = 'flex';
+
+                // Display Medicines
+                if (aiMedicines.length > 0) {
+                    interpretedMedicinesDiv.innerHTML = aiMedicines.map(med =>
+                        `<strong>${med.name}</strong>: ${med.instructions}`
+                    ).join('<br><br>');
+                } else if (aiSummary) {
+                    interpretedMedicinesDiv.textContent = aiSummary;
+                } else {
+                    interpretedMedicinesDiv.textContent = 'No medicine instructions found.';
+                }
+
+                // Display Cleaned OCR and Gibberish Info
+                cleanedOcrTextDisplay.textContent = ocrCleanedText;
+                gibberishInfoDisplay.textContent = ocrGibberishInfo;
+
+                // Render suggested tests
+                suggestedTestsContainer.innerHTML = '';
+                const testsToDisplay = suggestedTests.length > 0 ? suggestedTests : ['Complete Blood Count (CBC)', 'Blood Sugar (Fasting)', 'Lipid Profile'];
+                testsToDisplay.forEach(test => {
+                    const div = document.createElement('div');
+                    div.className = 'test-item';
+                    div.innerHTML = `
+                        <input type="checkbox" class="checkbox" ${selectedTests.includes(test) ? 'checked' : ''}>
+                        <span class="test-label">${test}</span>
+                        ${selectedTests.includes(test) ? '<svg class="lucide icon check-icon" data-lucide="check-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/></svg>' : ''}
+                    `;
+                    div.addEventListener('click', () => toggleTestSelection(test));
+                    div.querySelector('.checkbox').addEventListener('change', (e) => {
+                        e.stopPropagation();
+                        toggleTestSelection(test);
+                    });
+                    suggestedTestsContainer.appendChild(div);
+                });
+                lucide.createIcons();
+
+                // Confirm button visibility
+                if (selectedTests.length > 0) {
+                    confirmTestsButton.style.display = 'block';
+                    selectedTestsCountSpan.textContent = selectedTests.length;
+                } else {
+                    confirmTestsButton.style.display = 'none';
+                }
+            }
+
+            // Drag over effect
+            if (isDragOver) {
+                uploadArea.classList.add('active');
+            } else {
+                uploadArea.classList.remove('active');
+            }
+        }
+
+        // --- Event Handlers ---
+
+        async function processImage(file) {
+            isProcessing = true;
+            errorMessage = '';
+            renderUI();
+
+            try {
+                const formData = new FormData();
+                formData.append('prescription', file);
+
+                const response = await fetch('http://localhost:5000/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    ocrRawText = result.ocr_text || 'No raw OCR text provided.';
+                    ocrCleanedText = result.cleaned_ocr_text || 'No cleaned OCR text provided.';
+                    ocrGibberishInfo = result.gibberish_info || 'No Gibberish Info';
+
+                    if (result.ai_data) {
+                        aiMedicines = result.ai_data.medicines || [];
+                        suggestedTests = result.ai_data.suggested_tests || [];
+                        aiSummary = result.ai_data.summary || '';
+                    } else {
+                        aiMedicines = [];
+                        suggestedTests = ['AI processing failed to provide structured data.'];
+                        aiSummary = 'AI response was not structured as expected.';
+                    }
+
+                    selectedTests = [...suggestedTests];
+                } else {
+                    errorMessage = result.error || 'Failed to process image';
+                }
+            } catch (err) {
+                console.error('Processing error:', err);
+                errorMessage = 'Failed to connect to server or unexpected error occurred.';
+            } finally {
+                isProcessing = false;
+                renderUI();
+            }
+        }
+
+        function handleFileUpload(file) {
+            if (file && file.type.startsWith('image/')) {
+                uploadedFile = file;
+                errorMessage = '';
+                processImage(file);
+            } else {
+                errorMessage = 'Please upload a valid image file (JPG, PNG, GIF)';
+                renderUI();
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            isDragOver = false;
+            const files = Array.from(e.dataTransfer.files);
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
+            }
+            renderUI();
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            isDragOver = true;
+            renderUI();
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            isDragOver = false;
+            renderUI();
+        }
+
+        function toggleTestSelection(test) {
+            if (selectedTests.includes(test)) {
+                selectedTests = selectedTests.filter(t => t !== test);
+            } else {
+                selectedTests = [...selectedTests, test];
+            }
+            renderUI();
+        }
+
+        function handleConfirmTests() {
+            window.location.href = "index1.html";
+        }
+
+        function resetUpload() {
+            uploadedFile = null;
+            ocrRawText = '';
+            ocrCleanedText = '';
+            ocrGibberishInfo = '';
+            aiMedicines = [];
+            suggestedTests = [];
+            aiSummary = '';
+            selectedTests = [];
+            errorMessage = '';
+            renderUI();
+        }
+
+        // --- Event Listeners ---
+
+        uploadArea.querySelector('label[for="file-upload"] button').addEventListener('click', (e) => {
+            e.stopPropagation();
+            fileUploadInput.click();
+        });
+
+        uploadArea.addEventListener('click', (e) => {
+            if (!e.target.closest('button')) {
+                fileUploadInput.click();
+            }
+        });
+
+        fileUploadInput.addEventListener('change', (e) => handleFileUpload(e.target.files[0]));
+
+        uploadArea.addEventListener('drop', handleDrop);
+        uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('dragleave', handleDragLeave);
+
+        removeButton.addEventListener('click', resetUpload);
+        confirmTestsButton.addEventListener('click', handleConfirmTests);
+
+        // Initial render
+        renderUI();
+        // Accessibility Panel
+        
+        
+        // Text Size Adjustment
+        const textSizeBtns = document.querySelectorAll('.text-size-btn');
+        
+        textSizeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const size = btn.getAttribute('data-size');
+                document.body.classList.remove('text-small', 'text-medium', 'text-large');
+                document.body.classList.add(`text-${size}`);
+                
+                // Update active button
+                textSizeBtns.forEach(b => b.classList.remove('ring-2', 'ring-blue-500'));
+                btn.classList.add('ring-2', 'ring-blue-500');
+                
+                // Apply text size
+                if (size === 'small') {
+                    document.body.style.fontSize = '0.9rem';
+                } else if (size === 'medium') {
+                    document.body.style.fontSize = '1rem';
+                } else if (size === 'large') {
+                    document.body.style.fontSize = '1.2rem';
+                }
+            });
+        });
+
+          const accessibilityBtn = document.getElementById('accessibility-btn');
+          const accessibilityPanel = document.getElementById('accessibility-panel');
+          const closeAccessibility = document.getElementById('close-accessibility');
+
+          accessibilityBtn?.addEventListener('click', () => {
+            accessibilityPanel?.classList.add('open');
+          });
+
+          closeAccessibility?.addEventListener('click', () => {
+            accessibilityPanel?.classList.remove('open');
+          });
+
+        
+        // Contrast Toggle
+        const contrastBtns = document.querySelectorAll('.contrast-btn');
+        
+        contrastBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const contrast = btn.getAttribute('data-contrast');
+                document.body.classList.remove('high-contrast');
+                
+                if (contrast === 'high') {
+                    document.body.classList.add('high-contrast');
+                    document.documentElement.style.setProperty('--bg-color', '#000');
+                    document.documentElement.style.setProperty('--text-color', '#fff');
+                    document.body.style.backgroundColor = '#000';
+                    document.body.style.color = '#fff';
+                } else {
+                    document.documentElement.style.setProperty('--bg-color', '');
+                    document.documentElement.style.setProperty('--text-color', '');
+                    document.body.style.backgroundColor = '';
+                    document.body.style.color = '';
+                }
+                
+                // Update active button
+                contrastBtns.forEach(b => b.classList.remove('ring-2', 'ring-blue-500'));
+                btn.classList.add('ring-2', 'ring-blue-500');
+            });
+        });
+        
+        // Voice Support
+        const voiceSupportBtn = document.getElementById('voice-support-btn');
+        let voiceEnabled = false;
+        
+        voiceSupportBtn.addEventListener('click', () => {
+            voiceEnabled = !voiceEnabled;
+            
+            if (voiceEnabled) {
+                voiceSupportBtn.innerHTML = `
+                    <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071a1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clip-rule="evenodd"></path>
+                    </svg>
+                    Voice Enabled
+                `;
+                voiceSupportBtn.classList.remove('bg-blue-600');
+                voiceSupportBtn.classList.add('bg-green-600');
+                
+                alert('Voice support enabled. Click on any text to have it read aloud.');
+                
+                document.querySelectorAll('h1, h2, h3, p, a, button').forEach(el => {
+                    el.addEventListener('click', function() {
+                        if (voiceEnabled && window.speechSynthesis) {
+                            const text = this.textContent;
+                            const utterance = new SpeechSynthesisUtterance(text);
+                            window.speechSynthesis.speak(utterance);
+                        }
+                    });
+                });
+                
+            } else {
+                voiceSupportBtn.innerHTML = `
+                    <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071a1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clip-rule="evenodd"></path>
+                    </svg>
+                    Enable Voice
+                `;
+                voiceSupportBtn.classList.remove('bg-green-600');
+                voiceSupportBtn.classList.add('bg-blue-600');
+                
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                }
+            }
+        });
+    </script>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  const userName = localStorage.getItem('userName');
+  const loginLink = document.getElementById('auth-button'); // ✅ updated ID
+
+  if (isLoggedIn) {
+    // ✅ Change Login/Signup to Logout
+    if (loginLink) {
+      loginLink.textContent = 'Logout';
+      loginLink.href = '#';
+      loginLink.addEventListener('click', () => {
+        fetch('http://localhost:5000/api/auth/logout', {
+          method: 'POST',
+          credentials: 'include'
+        }).then(() => {
+          localStorage.clear();
+          location.reload();
+        });
+      });
+    }
+
+    // Optional greeting
+    const greeting = document.getElementById('userGreeting');
+    if (greeting && userName) {
+      greeting.textContent = `Welcome, ${userName}`;
+    }
+
+  } else {
+    // Protect booking/tracking pages
+    const isProtected = location.pathname.includes('book-test') || location.pathname.includes('track');
+    if (isProtected) {
+      alert('Please log in to continue.');
+      window.location.href = 'login-signup.html';
+    }
+  }
+});
+</script>
+
+</body>
+</html>

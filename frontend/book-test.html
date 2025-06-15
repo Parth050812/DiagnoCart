@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Your Test</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #f5faff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background-color: white;
+      position: relative;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 650px;
+      transition: transform 0.3s ease;
+    }
+    .container:hover {
+      transform: translateY(-5px);
+    }
+    h2 {
+      color: #1a3c5e;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 28px;
+      font-weight: 600;
+    }
+    p {
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 16px;
+    }
+    .form-row {
+      display: flex;
+      gap: 25px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      flex: 1;
+    }
+    label {
+      display: block;
+      color: #1a3c5e;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    label span {
+      color: #ef4444;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 14px;
+      color: #374151;
+      background-color: #f9fafb;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #1e40af;
+      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    }
+    textarea {
+      resize: none;
+      height: 80px;
+    }
+    .address-group {
+      display: flex;
+      gap: 15px;
+      align-items: flex-end;
+    }
+    .location-btn {
+      padding: 12px 15px;
+      background-color: #1e40af;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .location-btn:hover {
+      background-color: #1e3a8a;
+    }
+    .location-btn::before {
+      content: '📍';
+      font-size: 16px;
+    }
+    .buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    button {
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    .book-btn {
+      background-color: #1e40af;
+      color: white;
+      border: none;
+    }
+    .book-btn:hover {
+      background-color: #1e3a8a;
+      transform: translateY(-2px);
+    }
+    .book-btn::before {
+      content: '📅';
+      font-size: 16px;
+    }
+    .clear-btn {
+      background-color: white;
+      color: #1e40af;
+      border: 1px solid #1e40af;
+    }
+    .clear-btn:hover {
+      background-color: #f1f5f9;
+      transform: translateY(-2px);
+    }
+    .clear-btn::before {
+      content: '🗑';
+      font-size: 16px;
+    }
+    .close-btn {
+  position: absolute;
+  top: 25px;
+  right: 30px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #1a3c5e;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+.close-btn:hover {
+  color: #ef4444;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button onclick="goHome()" class="close-btn" title="Close">&times;</button>
+    <h2>Book Your Test</h2>
+    <p>Fill in your details and we'll arrange a home sample collection</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="fullName">Full Name <span>*</span></label>
+        <input type="text" id="fullName" placeholder="Full Name">
+      </div>
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number <span>*</span></label>
+        <input type="tel" id="phoneNumber" placeholder="Phone Number">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="Email Address">
+      </div>
+      <div class="form-group">
+        <label for="age">Age <span>*</span></label>
+        <input type="number" id="age" placeholder="Age">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="address">Complete Address <span>*</span></label>
+      <div class="address-group">
+        <textarea id="address" placeholder="Enter your complete address for sample collection"></textarea>
+        <button class="location-btn" onclick="getUserLocation()">Use My Location</button>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="testType">Select Test Type <span>*</span></label>
+        <select id="testType">
+          <option value="">Choose a test</option>
+          <option value="blood">Blood Test</option>
+          <option value="urine">Urine Test</option>
+          <option value="xray">X-Ray</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="preferredDate">Preferred Date <span>*</span></label>
+        <input type="date" id="preferredDate">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="timeSlot">Preferred Time Slot <span>*</span></label>
+        <select id="timeSlot">
+          <option value="">Select time slot</option>
+          <option value="morning">Morning (8 AM - 12 PM)</option>
+          <option value="afternoon">Afternoon (12 PM - 4 PM)</option>
+          <option value="evening">Evening (4 PM - 8 PM)</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="instructions">Special Instructions</label>
+      <textarea id="instructions" placeholder="Any special instructions for our collection team"></textarea>
+    </div>
+    <div class="buttons">
+      <button class="book-btn" onclick="bookTest()">Book Test Now</button>
+      <button class="clear-btn" onclick="clearForm()">Clear Form</button>
+    </div>
+  </div>
+
+<div id="confirmationPage" class="container" style="display: none;">
+  <h2>Booking Confirmed ✅</h2>
+  <p>Your diagnostic test has been scheduled successfully.</p>
+  <div id="confirmationDetails" style="margin-top: 20px;"></div>
+  <div style="text-align: center; margin-top: 30px;">
+    <button onclick="goHome()" style="padding: 10px 20px; background-color: #1e40af; color: white; border: none; border-radius: 8px; font-size: 16px;">Go Back to Homepage</button>
+  </div>
+</div>
+
+
+<script>
+  function showFlash(message, type = 'success') {
+    alert(message); // You can enhance this later like we did on login/signup
+  }
+
+async function bookTest() {
+  const fullName = document.getElementById('fullName').value.trim();
+  const phoneNumber = document.getElementById('phoneNumber').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const age = parseInt(document.getElementById('age').value);
+  const address = document.getElementById('address').value.trim();
+  const testType = document.getElementById('testType').value;
+  const preferredDate = document.getElementById('preferredDate').value;
+  const timeSlot = document.getElementById('timeSlot').value;
+  const instructions = document.getElementById('instructions').value.trim();
+
+  if (!fullName || !phoneNumber || !age || !address || !testType || !preferredDate || !timeSlot) {
+    return showFlash('Please fill in all required fields', 'error');
+  }
+
+  const testData = {
+    fullName, phoneNumber, email, age, address,
+    testType, preferredDate, timeSlot,
+    prescription: '',
+    instructions
+  };
+
+  try {
+    const response = await fetch('https://diagnocart-backend.onrender.com/api/book-test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(testData)
+    });
+
+    // ✅ Read response text first
+    const rawText = await response.text();
+
+    // ✅ Try to parse as JSON safely
+    let data = {};
+    try {
+      data = JSON.parse(rawText);
+    } catch {
+      data = { message: rawText }; // fallback for plain text response
+    }
+
+    if (response.ok) {
+      document.querySelector('.container').style.display = 'none';
+document.getElementById('confirmationPage').style.display = 'block';
+
+document.getElementById('confirmationDetails').innerHTML = `
+  <strong>Full Name:</strong> ${fullName}<br>
+  <strong>Phone Number:</strong> ${phoneNumber}<br>
+  ${email ? `<strong>Email:</strong> ${email}<br>` : ''}
+  <strong>Age:</strong> ${age}<br>
+  <strong>Address:</strong> ${address}<br>
+  <strong>Test Type:</strong> ${testType}<br>
+  <strong>Date:</strong> ${preferredDate}<br>
+  <strong>Time Slot:</strong> ${timeSlot}<br>
+  ${instructions ? `<strong>Instructions:</strong> ${instructions}<br>` : ''}
+`;
+
+    } else {
+      showFlash(data.message || 'Booking failed. Please try again.', 'error');
+    }
+  } catch (error) {
+    console.error('Booking error:', error);
+    showFlash('Something went wrong. Please try again later.', 'error');
+  }
+}
+
+function clearForm() {
+  document.getElementById('fullName').value = '';
+  document.getElementById('phoneNumber').value = '';
+  document.getElementById('email').value = '';
+  document.getElementById('age').value = '';
+  document.getElementById('address').value = '';
+  document.getElementById('testType').value = '';
+  document.getElementById('preferredDate').value = '';
+  document.getElementById('timeSlot').value = '';
+  document.getElementById('prescription').value = '';
+  document.getElementById('instructions').value = '';
+}
+
+
+    function getUserLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          fetchAddress(lat, lon);
+        },
+        (error) => {
+          showFlash('Unable to fetch location: ' + error.message, 'error');
+        }
+      );
+    } else {
+      showFlash('Geolocation is not supported by your browser.', 'error');
+    }
+  }
+
+  // ✅ And this one
+  async function fetchAddress(lat, lon) {
+  try {
+    const response = await fetch(`http://localhost:5000/api/reverse-geocode?lat=${lat}&lon=${lon}`);
+    const data = await response.json();
+
+    if (data && data.address) {
+      const addressParts = [];
+      if (data.address.road) addressParts.push(data.address.road);
+      if (data.address.city) addressParts.push(data.address.city);
+      if (data.address.state) addressParts.push(data.address.state);
+      if (data.address.postcode) addressParts.push(data.address.postcode);
+      if (data.address.country) addressParts.push(data.address.country);
+      const fullAddress = addressParts.join(', ');
+      document.getElementById('address').value = fullAddress || 'Address not found';
+    } else {
+      document.getElementById('address').value = 'Address not found';
+    }
+  } catch (error) {
+    document.getElementById('address').value = 'Error fetching address';
+    console.error('Error fetching address:', error);
+  }
+}
+
+  function goHome() {
+  window.location.href = 'index1.html';
+}
+
+</script>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  const userName = localStorage.getItem('userName');
+  const loginLink = document.getElementById('auth-button'); // ✅ updated ID
+
+  if (isLoggedIn) {
+    // ✅ Change Login/Signup to Logout
+    if (loginLink) {
+      loginLink.textContent = 'Logout';
+      loginLink.href = '#';
+      loginLink.addEventListener('click', () => {
+        fetch('http://localhost:5000/api/auth/logout', {
+          method: 'POST',
+          credentials: 'include'
+        }).then(() => {
+          localStorage.clear();
+          location.reload();
+        });
+      });
+    }
+
+    // Optional greeting
+    const greeting = document.getElementById('userGreeting');
+    if (greeting && userName) {
+      greeting.textContent = `Welcome, ${userName}`;
+    }
+
+  } else {
+    // Protect booking/tracking pages
+    const isProtected = location.pathname.includes('book-test') || location.pathname.includes('track');
+    if (isProtected) {
+      alert('Please log in to continue.');
+      window.location.href = 'login-signup.html';
+    }
+  }
+});
+</script>
+ 
+</body>
+</html>
