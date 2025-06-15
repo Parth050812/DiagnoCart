@@ -374,8 +374,11 @@
                         <i class="fas fa-clipboard-list"></i>
                     </div>
                     <div class="card-content">
+                        <div class="booking-card prescription-card" id="upload-prescription-card>
+                        <a href="Prescript.html" class="booking-card prescription-card">
                         <h3>Upload Prescription</h3>
                         <p>Get assistance from experts</p>
+                        </div>
                     </div>
                     <div class="arrow-icon">
                         <i class="fas fa-arrow-right"></i>
@@ -756,7 +759,9 @@
         const accessibilityBtn = document.getElementById('accessibility-btn');
         const accessibilityPanel = document.getElementById('accessibility-panel');
         const closeAccessibility = document.getElementById('close-accessibility');
-        
+        document.getElementById('upload-prescription-card').addEventListener('click', () => {
+            window.location.href = 'Prescript.html';
+        });
    if (accessibilityBtn && accessibilityPanel && closeAccessibility) {
         accessibilityBtn.addEventListener('click', () => {
             // Toggle the 'hidden' class to show/hide the panel
