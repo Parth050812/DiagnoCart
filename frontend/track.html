@@ -747,8 +747,7 @@ trackForm.addEventListener('submit', async (e) => {
   }
 
   try {
-    const res = await fetch(`https://diagnocart-backend.onrender.com/api/track?phone=${trackInput}`)
-);
+    const res = await fetch(`https://diagnocart-backend.onrender.com/api/track?phone=${trackInput}`);
 
     let data;
     try {
