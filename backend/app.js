@@ -17,7 +17,7 @@ const multer = require('multer');
 const Tesseract = require('tesseract.js');
 const fs = require('fs');
 const fetch = require('node-fetch'); // you already have dotenv
-const { jsonrepair } = require('jsonrepair');
+const jsonrepair = require('@stdlib/json-repair');
 const upload = multer({ dest: 'uploads/' });
 
 const app = express();
