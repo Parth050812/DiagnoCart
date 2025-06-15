@@ -162,36 +162,27 @@ Remember, generate ONLY the JSON object.`,
     const data = await response.json();
 
     let generatedText = '';
-    if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
-        generatedText = data.candidates[0].content.parts[0].text;
+    if (data.candidates?.[0]?.content?.parts?.[0]) {
+        generatedText = data.candidates[0].content.parts[0]; // not .text
     } else if (data.error) {
         throw new Error(`Google API Error: ${data.error.message || JSON.stringify(data.error)}`);
     } else {
         throw new Error('Unknown error from Google API: No generated text found in candidates.');
     }
-
-    let jsonString = generatedText;
-
+    
     try {
-        const jsonMatch = generatedText.match(/```json\s*([\s\S]*?)```/);
-        if (jsonMatch && jsonMatch[1]) {
-            jsonString = jsonMatch[1].trim();
-        } else {
-            jsonString = generatedText.trim();
-        }
-
-        const repairedJsonString = jsonrepair(jsonString);
-
+        const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error('No JSON object found.');
+        const repairedJsonString = jsonrepair(jsonMatch[0]);
         const parsedData = JSON.parse(repairedJsonString);
         return parsedData;
     } catch (parseError) {
-        // Keeping error logging for critical issues, but removed general console.logs
         console.error('Failed to parse LLM JSON response even after repair. Error details:', parseError);
         console.error('Raw LLM response that caused error (full content):', generatedText);
         return {
             medicines: [],
             suggested_tests: ['AI output could not be parsed into JSON. Please check server logs for details.'],
-            summary: "AI output could not be parsed. This might be due to the model not strictly adhering to JSON output or including extra characters. Raw AI response snippet: " + generatedText.substring(0, Math.min(generatedText.length, 300)) + "..."
+            summary: "AI output could not be parsed. Raw AI response snippet: " + generatedText.substring(0, 300) + "..."
         };
     }
 }
