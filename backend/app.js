@@ -161,32 +161,38 @@ Remember, generate ONLY the JSON object.`,
 
     const data = await response.json();
 
-    let generatedText = '';
-    if (data.candidates?.[0]?.content?.parts?.[0]) {
-        const part = data.candidates[0].content.parts[0];
+    let part = data?.candidates?.[0]?.content?.parts?.[0];
+    let jsonString = '';
     
-        // If the part is already a proper object (not stringified), return it directly
-        if (typeof part === 'object') {
-            return part;
-        }
-    
-        // Otherwise try to parse stringified JSON
-        try {
-            const repairedJsonString = jsonrepair(part);
-            const parsedData = JSON.parse(repairedJsonString);
-            return parsedData;
-        } catch (parseError) {
-            console.error('Failed to parse AI response. Error details:', parseError);
-            return {
-                medicines: [],
-                suggested_tests: ['Could not parse response into valid JSON.'],
-                summary: "Parsing failed. Raw AI response: " + (typeof part === 'string' ? part.substring(0, 300) : JSON.stringify(part).substring(0, 300)) + "..."
-            };
-        }
-    } else if (data.error) {
-        throw new Error(`Google API Error: ${data.error.message || JSON.stringify(data.error)}`);
+    if (typeof part === 'object' && part !== null && part.text) {
+        jsonString = part.text.trim();  // when wrapped in text
+    } else if (typeof part === 'string') {
+        jsonString = part.trim();       // when returned directly
+    } else if (typeof part === 'object') {
+        // Sometimes the model directly returns a JSON object in deployment
+        return part;
     } else {
-        throw new Error('Unknown error: No valid candidate content returned.');
+        throw new Error('Unexpected format from Gemini API: ' + JSON.stringify(part));
+    }
+    
+    // Remove ```json markdown wrapper if present
+    const markdownMatch = jsonString.match(/```json\s*([\s\S]*?)```/);
+    if (markdownMatch && markdownMatch[1]) {
+        jsonString = markdownMatch[1].trim();
+    }
+    
+    try {
+        const repairedJsonString = jsonrepair(jsonString);
+        const parsedData = JSON.parse(repairedJsonString);
+        return parsedData;
+    } catch (err) {
+        console.error('Failed to parse JSON from Gemini:', err);
+        console.error('Raw response:', jsonString);
+        return {
+            medicines: [],
+            suggested_tests: ['Failed to parse AI JSON. Check logs.'],
+            summary: 'AI returned unparseable response. Snippet: ' + jsonString.slice(0, 300)
+        };
     }
 }
 
