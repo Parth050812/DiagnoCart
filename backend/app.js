@@ -11,15 +11,6 @@ const geocodeRoutes = require('./routes/geoCodeRotes');
 const trackRoutes = require('./routes/trackroutes');
 const contactRoutes = require('./routes/contactRoutes');
 
-
-app.use(cors({
-  origin: 'https://diagnokart.onrender.com',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-}));
-
-const app = express();
 const PORT = process.env.PORT || 5000;
 const session = require('express-session');
 const multer = require('multer');
@@ -29,6 +20,15 @@ const fetch = require('node-fetch'); // you already have dotenv
 const { jsonrepair } = require('jsonrepair');
 const upload = multer({ dest: 'uploads/' });
 
+const app = express();
+app.use(cors({
+  origin: 'https://diagnokart.onrender.com',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+
+
 
 
 // ✅ ENABLE CORS WITH EXPLICIT OPTIONS
@@ -37,7 +37,7 @@ const upload = multer({ dest: 'uploads/' });
 //   methods: ['GET', 'POST'],
 //   allowedHeaders: ['Content-Type']
 // }));
-
+app.use(bodyParser.json());
 
 app.use(session({
   secret: process.env.SECERET,
@@ -51,7 +51,7 @@ app.use(session({
 
 
 // ✅ Body parser to read JSON
-app.use(bodyParser.json());
+
 
 // ✅ Routes
 app.use('/api', testRoutes);
