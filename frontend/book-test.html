@@ -346,7 +346,7 @@ function clearForm() {
   // ✅ And this one
   async function fetchAddress(lat, lon) {
   try {
-    const response = await fetch(`http://localhost:5000/api/reverse-geocode?lat=${lat}&lon=${lon}`);
+    const response = await fetch(`https://diagnocart-backend.onrender.com/api/reverse-geocode?lat=${lat}&lon=${lon}`);
     const data = await response.json();
 
     if (data && data.address) {
@@ -384,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loginLink.textContent = 'Logout';
       loginLink.href = '#';
       loginLink.addEventListener('click', () => {
-        fetch('http://localhost:5000/api/auth/logout', {
+        fetch('https://diagnocart-backend.onrender.com/api/auth/logout', {
           method: 'POST',
           credentials: 'include'
         }).then(() => {
