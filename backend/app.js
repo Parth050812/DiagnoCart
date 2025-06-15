@@ -182,8 +182,7 @@ Remember, generate ONLY the JSON object.`,
     }
     
     try {
-        const repairedJsonString = jsonrepair(jsonString);
-        const parsedData = JSON.parse(repairedJsonString);
+        const parsedData = JSON.parse(jsonString);
         return parsedData;
     } catch (err) {
         console.error('Failed to parse JSON from Gemini:', err);
