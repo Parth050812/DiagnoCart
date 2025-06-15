@@ -11,6 +11,14 @@ const geocodeRoutes = require('./routes/geoCodeRotes');
 const trackRoutes = require('./routes/trackroutes');
 const contactRoutes = require('./routes/contactRoutes');
 
+
+app.use(cors({
+  origin: 'https://diagnokart.onrender.com',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 const session = require('express-session');
@@ -29,19 +37,6 @@ const upload = multer({ dest: 'uploads/' });
 //   methods: ['GET', 'POST'],
 //   allowedHeaders: ['Content-Type']
 // }));
-
-const corsOptions = {
-  origin: 'https://diagnokart-l9i5.onrender.com',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
-
-app.use(express.json());
-app.use(express.static('public'));
 
 
 app.use(session({
