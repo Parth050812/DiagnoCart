@@ -163,7 +163,14 @@ Remember, generate ONLY the JSON object.`,
 
     let generatedText = '';
     if (data.candidates?.[0]?.content?.parts?.[0]) {
-        generatedText = String(data.candidates[0].content.parts[0]); // not .text
+        const part = data.candidates[0].content.parts[0];
+        if (typeof part === 'string') {
+            generatedText = part;
+        } else if (part && typeof part === 'object' && 'text' in part) {
+            generatedText = part.text;
+        } else {
+            generatedText = JSON.stringify(part);
+        }
     } else if (data.error) {
         throw new Error(`Google API Error: ${data.error.message || JSON.stringify(data.error)}`);
     } else {
