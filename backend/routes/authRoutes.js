@@ -41,32 +41,37 @@ router.post('/login',
     body('password').notEmpty().withMessage('Password is required.')
   ],
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ message: errors.array()[0].msg });
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ message: errors.array()[0].msg });
+      }
+
+      const { phoneNumber, password } = req.body;
+      const user = await User.findOne({ phoneNumber });
+
+      if (!user || user.password !== password) {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
+
+      req.session.user = {
+        id: user._id,
+        name: user.name,
+        phoneNumber: user.phoneNumber
+      };
+
+      res.json({
+        message: 'Login successful',
+        userId: user._id,
+        name: user.name
+      });
+    } catch (err) {
+      console.error('Login error:', err);
+      res.status(500).json({ message: 'Internal server error' });
     }
-
-    const { phoneNumber, password } = req.body;
-    const user = await User.findOne({ phoneNumber });
-
-    if (!user || user.password !== password) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    // ✅ Save session
-    req.session.user = {
-      id: user._id,
-      name: user.name,
-      phoneNumber: user.phoneNumber
-    };
-
-    res.json({
-      message: 'Login successful',
-      userId: user._id,
-      name: user.name
-    });
   }
 );
+
 
 router.post('/logout', (req, res) => {
   req.session.destroy(err => {
