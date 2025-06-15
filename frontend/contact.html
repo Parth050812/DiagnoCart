@@ -513,7 +513,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loginLink.textContent = 'Logout';
       loginLink.href = '#';
       loginLink.addEventListener('click', () => {
-        fetch('http://localhost:5000/api/auth/logout', {
+        fetch('https://diagnocart-backend.onrender.com/api/auth/logout', {
           method: 'POST',
           credentials: 'include'
         }).then(() => {
