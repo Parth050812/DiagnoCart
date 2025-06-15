@@ -164,33 +164,29 @@ Remember, generate ONLY the JSON object.`,
     let generatedText = '';
     if (data.candidates?.[0]?.content?.parts?.[0]) {
         const part = data.candidates[0].content.parts[0];
-        if (typeof part === 'string') {
-            generatedText = part;
-        } else if (part && typeof part === 'object' && 'text' in part) {
-            generatedText = part.text;
-        } else {
-            generatedText = JSON.stringify(part);
+    
+        // If the part is already a proper object (not stringified), return it directly
+        if (typeof part === 'object') {
+            return part;
+        }
+    
+        // Otherwise try to parse stringified JSON
+        try {
+            const repairedJsonString = jsonrepair(part);
+            const parsedData = JSON.parse(repairedJsonString);
+            return parsedData;
+        } catch (parseError) {
+            console.error('Failed to parse AI response. Error details:', parseError);
+            return {
+                medicines: [],
+                suggested_tests: ['Could not parse response into valid JSON.'],
+                summary: "Parsing failed. Raw AI response: " + (typeof part === 'string' ? part.substring(0, 300) : JSON.stringify(part).substring(0, 300)) + "..."
+            };
         }
     } else if (data.error) {
         throw new Error(`Google API Error: ${data.error.message || JSON.stringify(data.error)}`);
     } else {
-        throw new Error('Unknown error from Google API: No generated text found in candidates.');
-    }
-    
-    try {
-        const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) throw new Error('No JSON object found.');
-        const repairedJsonString = jsonrepair(jsonMatch[0]);
-        const parsedData = JSON.parse(repairedJsonString);
-        return parsedData;
-    } catch (parseError) {
-        console.error('Failed to parse LLM JSON response even after repair. Error details:', parseError);
-        console.error('Raw LLM response that caused error (full content):', generatedText);
-        return {
-            medicines: [],
-            suggested_tests: ['AI output could not be parsed into JSON. Please check server logs for details.'],
-            summary: "AI output could not be parsed. Raw AI response snippet: " + generatedText.substring(0, 300) + "..."
-        };
+        throw new Error('Unknown error: No valid candidate content returned.');
     }
 }
 
